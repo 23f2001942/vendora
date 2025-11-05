@@ -26,7 +26,7 @@ const Index = () => {
       {/* Header */}
       <header className="border-b bg-card/50 backdrop-blur-sm">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-primary">LocalMarket</h1>
+          <h1 className="text-2xl font-bold text-primary">SmartMartX</h1>
           <div className="space-x-4">
             <Button variant="ghost" onClick={() => navigate('/auth/login')}>
               Login
