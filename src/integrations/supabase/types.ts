@@ -312,27 +312,54 @@ export type Database = {
       }
       profiles: {
         Row: {
+          auth_provider: Database["public"]["Enums"]["auth_provider"] | null
           avatar_url: string | null
+          city: string | null
+          country: string | null
           created_at: string
+          default_address: string | null
+          default_latitude: number | null
+          default_longitude: number | null
+          email_verified: boolean | null
           full_name: string
           id: string
           phone: string | null
+          postal_code: string | null
+          state: string | null
           updated_at: string
         }
         Insert: {
+          auth_provider?: Database["public"]["Enums"]["auth_provider"] | null
           avatar_url?: string | null
+          city?: string | null
+          country?: string | null
           created_at?: string
+          default_address?: string | null
+          default_latitude?: number | null
+          default_longitude?: number | null
+          email_verified?: boolean | null
           full_name: string
           id: string
           phone?: string | null
+          postal_code?: string | null
+          state?: string | null
           updated_at?: string
         }
         Update: {
+          auth_provider?: Database["public"]["Enums"]["auth_provider"] | null
           avatar_url?: string | null
+          city?: string | null
+          country?: string | null
           created_at?: string
+          default_address?: string | null
+          default_latitude?: number | null
+          default_longitude?: number | null
+          email_verified?: boolean | null
           full_name?: string
           id?: string
           phone?: string | null
+          postal_code?: string | null
+          state?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -569,6 +596,7 @@ export type Database = {
     }
     Enums: {
       app_role: "customer" | "retailer" | "wholesaler"
+      auth_provider: "email" | "google" | "facebook"
       order_status:
         | "pending"
         | "confirmed"
@@ -715,6 +743,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["customer", "retailer", "wholesaler"],
+      auth_provider: ["email", "google", "facebook"],
       order_status: [
         "pending",
         "confirmed",
