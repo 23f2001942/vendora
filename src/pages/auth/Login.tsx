@@ -79,16 +79,22 @@ export default function Login() {
 
     setLoading(true);
     try {
+      // Use production URL for deployed site, or current origin for development
+      const redirectUrl = window.location.hostname === 'localhost' 
+        ? `${window.location.origin}/`
+        : 'https://smartmartx.vercel.app/';
+      
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
-          emailRedirectTo: `${window.location.origin}/`
+          shouldCreateUser: false,
+          emailRedirectTo: redirectUrl
         }
       });
 
       if (error) throw error;
       setOtpSent(true);
-      toast.success('OTP sent to your email!');
+      toast.success('Check your email for the login link or code!');
     } catch (error: any) {
       toast.error(error.message || 'Failed to send OTP');
     } finally {
