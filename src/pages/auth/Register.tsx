@@ -98,20 +98,20 @@ export default function Register() {
       if (authError) throw authError;
       if (!authData.user) throw new Error('User creation failed');
 
-      const { error: profileError } = await supabase.from('profiles').insert({
-        id: authData.user.id,
-        full_name: fullName,
-        phone,
-        auth_provider: 'email',
-        email_verified: false,
-        default_latitude: location.latitude,
-        default_longitude: location.longitude,
-        default_address: location.address,
-        city: location.city,
-        state: location.state,
-        postal_code: location.postalCode,
-        country: location.country
-      });
+      // Update the profile created by the trigger with additional information
+      const { error: profileError } = await supabase.from('profiles')
+        .update({
+          full_name: fullName,
+          phone,
+          default_latitude: location.latitude,
+          default_longitude: location.longitude,
+          default_address: location.address,
+          city: location.city,
+          state: location.state,
+          postal_code: location.postalCode,
+          country: location.country
+        })
+        .eq('id', authData.user.id);
 
       if (profileError) throw profileError;
 
