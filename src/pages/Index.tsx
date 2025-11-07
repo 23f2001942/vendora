@@ -80,12 +80,12 @@ const Index = () => {
 
       {/* CTA Section */}
       <section className="container mx-auto px-4 py-16 text-center">
-        <div className="bg-primary text-primary-foreground rounded-lg p-12">
-          <h3 className="text-3xl font-bold mb-4">Ready to Start?</h3>
-          <p className="text-lg mb-6 opacity-90">
+        <div className="bg-card border rounded-lg p-12 shadow-sm">
+          <h3 className="text-3xl font-bold mb-4 text-foreground">Ready to Start?</h3>
+          <p className="text-lg mb-6 text-muted-foreground">
             Join thousands of users already trading on SmartMartX
           </p>
-          <Button size="lg" variant="secondary" onClick={() => navigate('/auth/register')}>
+          <Button size="lg" onClick={() => navigate('/auth/register')}>
             Create Your Account
           </Button>
         </div>

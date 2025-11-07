@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Register from "./pages/auth/Register";
 import Login from "./pages/auth/Login";
+import ResetPassword from "./pages/auth/ResetPassword";
 import Onboarding from "./pages/Onboarding";
 import CustomerDashboard from "./pages/customer/Dashboard";
 import RetailerDashboard from "./pages/retailer/Dashboard";
@@ -26,6 +27,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/auth/register" element={<Register />} />
             <Route path="/auth/login" element={<Login />} />
+            <Route path="/auth/reset-password" element={<ResetPassword />} />
             <Route path="/onboarding" element={<Onboarding />} />
             <Route path="/customer/dashboard" element={<CustomerDashboard />} />
             <Route path="/retailer/dashboard" element={<RetailerDashboard />} />

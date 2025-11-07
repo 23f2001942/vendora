@@ -202,6 +202,13 @@ export default function Login() {
                     {loading ? 'Signing in...' : 'Sign in'}
                   </Button>
                   <Button
+                    variant="link"
+                    className="w-full p-0 text-sm"
+                    onClick={() => navigate('/auth/reset-password')}
+                  >
+                    Forgot Password?
+                  </Button>
+                  <Button
                     type="button"
                     variant="outline"
                     className="w-full"
