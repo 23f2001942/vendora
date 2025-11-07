@@ -11,8 +11,20 @@ import Login from "./pages/auth/Login";
 import ResetPassword from "./pages/auth/ResetPassword";
 import Onboarding from "./pages/Onboarding";
 import CustomerDashboard from "./pages/customer/Dashboard";
+import CustomerRetailers from "./pages/customer/Retailers";
+import CustomerRetailerProducts from "./pages/customer/RetailerProducts";
+import CustomerProductDetail from "./pages/customer/ProductDetail";
+import CustomerProfile from "./pages/customer/Profile";
+
 import RetailerDashboard from "./pages/retailer/Dashboard";
+import RetailerProducts from "./pages/retailer/Products";
+import RetailerWholesalers from "./pages/retailer/Wholesalers";
+import RetailerWholesalerProducts from "./pages/retailer/WholesalerProducts";
+import RetailerProfile from "./pages/retailer/Profile";
+
 import WholesalerDashboard from "./pages/wholesaler/Dashboard";
+import WholesalerProducts from "./pages/wholesaler/Products";
+import WholesalerProfile from "./pages/wholesaler/Profile";
 
 const queryClient = new QueryClient();
 
@@ -29,9 +41,25 @@ const App = () => (
             <Route path="/auth/login" element={<Login />} />
             <Route path="/auth/reset-password" element={<ResetPassword />} />
             <Route path="/onboarding" element={<Onboarding />} />
+            
+            {/* Customer Routes */}
             <Route path="/customer/dashboard" element={<CustomerDashboard />} />
+            <Route path="/customer/retailers" element={<CustomerRetailers />} />
+            <Route path="/customer/retailer/:retailerId/products" element={<CustomerRetailerProducts />} />
+            <Route path="/customer/product/:productId" element={<CustomerProductDetail />} />
+            <Route path="/customer/profile" element={<CustomerProfile />} />
+            
+            {/* Retailer Routes */}
             <Route path="/retailer/dashboard" element={<RetailerDashboard />} />
+            <Route path="/retailer/products" element={<RetailerProducts />} />
+            <Route path="/retailer/wholesalers" element={<RetailerWholesalers />} />
+            <Route path="/retailer/wholesaler/:wholesalerId/products" element={<RetailerWholesalerProducts />} />
+            <Route path="/retailer/profile" element={<RetailerProfile />} />
+            
+            {/* Wholesaler Routes */}
             <Route path="/wholesaler/dashboard" element={<WholesalerDashboard />} />
+            <Route path="/wholesaler/products" element={<WholesalerProducts />} />
+            <Route path="/wholesaler/profile" element={<WholesalerProfile />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

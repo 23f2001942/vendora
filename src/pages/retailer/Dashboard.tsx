@@ -94,13 +94,13 @@ const RetailerDashboard = () => {
             <CardDescription>Manage your store and inventory</CardDescription>
           </CardHeader>
           <CardContent className="grid md:grid-cols-3 gap-4">
-            <Button className="h-20" variant="outline">
-              Add Products
+            <Button className="h-20" variant="outline" onClick={() => navigate('/retailer/products')}>
+              Manage Products
             </Button>
-            <Button className="h-20" variant="outline">
+            <Button className="h-20" variant="outline" onClick={() => console.log('View Orders')}>
               View Orders
             </Button>
-            <Button className="h-20" variant="outline">
+            <Button className="h-20" variant="outline" onClick={() => navigate('/retailer/wholesalers')}>
               Browse Wholesalers
             </Button>
           </CardContent>

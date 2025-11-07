@@ -94,14 +94,14 @@ const WholesalerDashboard = () => {
             <CardDescription>Manage your wholesale operations</CardDescription>
           </CardHeader>
           <CardContent className="grid md:grid-cols-3 gap-4">
-            <Button className="h-20" variant="outline">
-              Add Products
+            <Button className="h-20" variant="outline" onClick={() => navigate('/wholesaler/products')}>
+              Manage Products
             </Button>
-            <Button className="h-20" variant="outline">
+            <Button className="h-20" variant="outline" onClick={() => console.log('View Orders')}>
               View Orders
             </Button>
-            <Button className="h-20" variant="outline">
-              Manage Service Areas
+            <Button className="h-20" variant="outline" onClick={() => navigate('/wholesaler/profile')}>
+              Business Profile
             </Button>
           </CardContent>
         </Card>
