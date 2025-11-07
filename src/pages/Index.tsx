@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEffect } from "react";
 import { ShoppingCart, Store, Warehouse } from "lucide-react";
+import { NavBar } from "@/components/NavBar";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -23,20 +24,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary">
-      {/* Header */}
-      <header className="border-b bg-card/50 backdrop-blur-sm">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-primary">SmartMartX</h1>
-          <div className="space-x-4">
-            <Button variant="ghost" onClick={() => navigate('/auth/login')}>
-              Login
-            </Button>
-            <Button onClick={() => navigate('/auth/register')}>
-              Sign Up
-            </Button>
-          </div>
-        </div>
-      </header>
+      <NavBar />
 
       {/* Hero Section */}
       <section className="container mx-auto px-4 py-20 text-center">
@@ -95,7 +83,7 @@ const Index = () => {
         <div className="bg-primary text-primary-foreground rounded-lg p-12">
           <h3 className="text-3xl font-bold mb-4">Ready to Start?</h3>
           <p className="text-lg mb-6 opacity-90">
-            Join thousands of users already trading on LocalMarket
+            Join thousands of users already trading on SmartMartX
           </p>
           <Button size="lg" variant="secondary" onClick={() => navigate('/auth/register')}>
             Create Your Account
@@ -106,7 +94,7 @@ const Index = () => {
       {/* Footer */}
       <footer className="border-t mt-16">
         <div className="container mx-auto px-4 py-8 text-center text-muted-foreground">
-          <p>&copy; 2025 LocalMarket. All rights reserved.</p>
+          <p>&copy; 2025 SmartMartX. All rights reserved.</p>
         </div>
       </footer>
     </div>

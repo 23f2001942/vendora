@@ -28,7 +28,7 @@ const WholesalerDashboard = () => {
       {/* Header */}
       <header className="border-b bg-card">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-primary">LocalMarket</h1>
+          <h1 className="text-2xl font-bold text-primary">SmartMartX</h1>
           <Button variant="outline" onClick={handleSignOut}>
             Sign Out
           </Button>
