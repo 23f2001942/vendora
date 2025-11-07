@@ -1,11 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Moon, Sun } from "lucide-react";
+import { Moon, Sun, User, LogOut } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { CartIcon } from "@/components/customer/CartIcon";
+import { useProfile } from "@/hooks/useProfile";
 
 export const NavBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user, signOut } = useAuth();
+  const { profile } = useProfile();
   const [theme, setTheme] = useState<"light" | "dark">("light");
 
   useEffect(() => {
@@ -25,6 +30,11 @@ export const NavBar = () => {
     setTheme(newTheme);
     localStorage.setItem("theme", newTheme);
     document.documentElement.classList.toggle("dark", newTheme === "dark");
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/auth/login");
   };
 
   const isAuthPage = location.pathname.startsWith("/auth");
@@ -51,27 +61,45 @@ export const NavBar = () => {
               <Sun className="h-5 w-5" />
             )}
           </Button>
-          {isAuthPage && (
+          {user ? (
+            <div className="flex items-center gap-2">
+              {profile?.role === "customer" && <CartIcon />}
+              <Button variant="ghost" size="icon" onClick={() => {
+                if (profile?.role === "customer") navigate("/customer/profile");
+                else if (profile?.role === "retailer") navigate("/retailer/profile");
+                else if (profile?.role === "wholesaler") navigate("/wholesaler/profile");
+              }}>
+                <User className="h-5 w-5" />
+              </Button>
+              <Button variant="ghost" onClick={handleSignOut}>
+                <LogOut className="h-5 w-5 mr-2" />
+                Sign Out
+              </Button>
+            </div>
+          ) : (
             <>
-              {location.pathname === "/auth/login" ? (
-                <Button onClick={() => navigate('/auth/register')}>
-                  Sign Up
-                </Button>
+              {isAuthPage ? (
+                <>
+                  {location.pathname === "/auth/login" ? (
+                    <Button onClick={() => navigate('/auth/register')}>
+                      Sign Up
+                    </Button>
+                  ) : (
+                    <Button variant="ghost" onClick={() => navigate('/auth/login')}>
+                      Login
+                    </Button>
+                  )}
+                </>
               ) : (
-                <Button variant="ghost" onClick={() => navigate('/auth/login')}>
-                  Login
-                </Button>
+                <>
+                  <Button variant="ghost" onClick={() => navigate('/auth/login')}>
+                    Login
+                  </Button>
+                  <Button onClick={() => navigate('/auth/register')}>
+                    Sign Up
+                  </Button>
+                </>
               )}
-            </>
-          )}
-          {!isAuthPage && (
-            <>
-              <Button variant="ghost" onClick={() => navigate('/auth/login')}>
-                Login
-              </Button>
-              <Button onClick={() => navigate('/auth/register')}>
-                Sign Up
-              </Button>
             </>
           )}
         </div>

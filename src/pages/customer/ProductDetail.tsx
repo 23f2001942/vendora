@@ -9,6 +9,7 @@ import { PriceDisplay } from "@/components/shared/PriceDisplay";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { AddToCartButton } from "@/components/customer/AddToCartButton";
 
 const ProductDetail = () => {
   const { productId } = useParams();
@@ -75,13 +76,13 @@ const ProductDetail = () => {
               <p className="text-sm text-muted-foreground">{product.retailers.business_address}</p>
             </div>
 
-            <Button
-              size="lg"
+            <AddToCartButton
+              productId={product.id}
+              sellerId={product.retailer_id}
+              stockQuantity={product.stock_quantity}
+              isAvailable={product.is_available}
               className="w-full"
-              disabled={!product.is_available || product.stock_quantity === 0}
-            >
-              Add to Cart
-            </Button>
+            />
           </CardContent>
         </Card>
       </div>

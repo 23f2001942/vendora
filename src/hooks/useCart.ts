@@ -1,0 +1,144 @@
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+
+export const useCart = () => {
+  const queryClient = useQueryClient();
+
+  const { data: cartItems, isLoading } = useQuery({
+    queryKey: ["cart"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("cart_items")
+        .select(`
+          *,
+          retailer_products(
+            id,
+            price,
+            stock_quantity,
+            is_available,
+            products(
+              id,
+              name,
+              description,
+              category
+            ),
+            retailers(
+              id,
+              business_name
+            )
+          )
+        `)
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const addToCart = useMutation({
+    mutationFn: async ({
+      productId,
+      sellerId,
+      quantity = 1,
+    }: {
+      productId: string;
+      sellerId: string;
+      quantity?: number;
+    }) => {
+      const { data: existingItem } = await supabase
+        .from("cart_items")
+        .select("*")
+        .eq("product_id", productId)
+        .eq("seller_id", sellerId)
+        .single();
+
+      if (existingItem) {
+        const { error } = await supabase
+          .from("cart_items")
+          .update({ quantity: existingItem.quantity + quantity })
+          .eq("id", existingItem.id);
+        if (error) throw error;
+      } else {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) throw new Error("Not authenticated");
+
+        const { error } = await supabase.from("cart_items").insert({
+          user_id: user.id,
+          product_id: productId,
+          seller_id: sellerId,
+          quantity,
+        });
+        if (error) throw error;
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
+      queryClient.invalidateQueries({ queryKey: ["cart-count"] });
+      toast.success("Added to cart");
+    },
+    onError: (error) => {
+      toast.error("Failed to add to cart");
+      console.error(error);
+    },
+  });
+
+  const updateQuantity = useMutation({
+    mutationFn: async ({ itemId, quantity }: { itemId: string; quantity: number }) => {
+      const { error } = await supabase
+        .from("cart_items")
+        .update({ quantity })
+        .eq("id", itemId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
+      queryClient.invalidateQueries({ queryKey: ["cart-count"] });
+    },
+    onError: () => {
+      toast.error("Failed to update quantity");
+    },
+  });
+
+  const removeFromCart = useMutation({
+    mutationFn: async (itemId: string) => {
+      const { error } = await supabase.from("cart_items").delete().eq("id", itemId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
+      queryClient.invalidateQueries({ queryKey: ["cart-count"] });
+      toast.success("Removed from cart");
+    },
+    onError: () => {
+      toast.error("Failed to remove item");
+    },
+  });
+
+  const clearCart = useMutation({
+    mutationFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
+
+      const { error } = await supabase
+        .from("cart_items")
+        .delete()
+        .eq("user_id", user.id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
+      queryClient.invalidateQueries({ queryKey: ["cart-count"] });
+      toast.success("Cart cleared");
+    },
+  });
+
+  return {
+    cartItems,
+    isLoading,
+    addToCart,
+    updateQuantity,
+    removeFromCart,
+    clearCart,
+  };
+};

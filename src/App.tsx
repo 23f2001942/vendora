@@ -15,6 +15,7 @@ import CustomerRetailers from "./pages/customer/Retailers";
 import CustomerRetailerProducts from "./pages/customer/RetailerProducts";
 import CustomerProductDetail from "./pages/customer/ProductDetail";
 import CustomerProfile from "./pages/customer/Profile";
+import CustomerCart from "./pages/customer/Cart";
 
 import RetailerDashboard from "./pages/retailer/Dashboard";
 import RetailerProducts from "./pages/retailer/Products";
@@ -48,6 +49,7 @@ const App = () => (
             <Route path="/customer/retailer/:retailerId/products" element={<CustomerRetailerProducts />} />
             <Route path="/customer/product/:productId" element={<CustomerProductDetail />} />
             <Route path="/customer/profile" element={<CustomerProfile />} />
+            <Route path="/customer/cart" element={<CustomerCart />} />
             
             {/* Retailer Routes */}
             <Route path="/retailer/dashboard" element={<RetailerDashboard />} />
