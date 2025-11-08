@@ -11,6 +11,9 @@ interface ProductCardProps {
     id: string;
     product_id: string;
     retailer_id: string;
+    retailers?: {
+      user_id: string;
+    };
     products: {
       name: string;
       description: string | null;
@@ -51,7 +54,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           </Button>
           <AddToCartButton
             productId={product.product_id}
-            sellerId={product.retailer_id}
+            sellerId={product.retailers?.user_id || product.retailer_id}
             stockQuantity={product.stock_quantity}
             isAvailable={product.is_available}
             className="flex-1"

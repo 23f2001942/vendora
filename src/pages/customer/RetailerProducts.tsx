@@ -37,7 +37,7 @@ const RetailerProducts = () => {
     queryFn: async () => {
       let query = supabase
         .from("retailer_products")
-        .select("*, products(*)")
+        .select("*, products(*), retailers(user_id)")
         .eq("retailer_id", retailerId)
         .eq("is_available", true);
 

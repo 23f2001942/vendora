@@ -12,21 +12,11 @@ export const useCart = () => {
         .from("cart_items")
         .select(`
           *,
-          retailer_products(
+          products(
             id,
-            price,
-            stock_quantity,
-            is_available,
-            products(
-              id,
-              name,
-              description,
-              category
-            ),
-            retailers(
-              id,
-              business_name
-            )
+            name,
+            description,
+            category
           )
         `)
         .order("created_at", { ascending: false });
