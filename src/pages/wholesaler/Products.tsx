@@ -26,6 +26,7 @@ const Products = () => {
   const { user, loading: authLoading } = useRequireAuth("wholesaler");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<any>(null);
   const queryClient = useQueryClient();
 
   const { data: wholesaler } = useQuery({
@@ -56,7 +57,8 @@ const Products = () => {
 
       const { data, error } = await query;
       if (error) throw error;
-      return data;
+      // Filter out any items where products is null
+      return data?.filter((item) => item.products !== null) || [];
     },
     enabled: !!wholesaler,
   });
@@ -104,6 +106,7 @@ const Products = () => {
     },
     onSuccess: (newProduct) => {
       queryClient.invalidateQueries({ queryKey: ["my-wholesaler-products"] });
+      queryClient.invalidateQueries({ queryKey: ["wholesaler-products-count"] });
       toast.success(`"${newProduct.name}" added successfully`);
       setIsAddDialogOpen(false);
       setFormData({
@@ -118,6 +121,30 @@ const Products = () => {
     },
     onError: (error) => {
       toast.error("Failed to add product: " + error.message);
+    },
+  });
+
+  const updateProductMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: any }) => {
+      // Update wholesaler_products
+      const { error } = await supabase
+        .from("wholesaler_products")
+        .update({
+          price: parseFloat(data.wholesale_price),
+          stock_quantity: parseInt(data.stock_quantity),
+          minimum_order_quantity: parseInt(data.minimum_order_quantity),
+        })
+        .eq("id", id);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["my-wholesaler-products"] });
+      toast.success("Product updated successfully");
+      setEditingProduct(null);
+    },
+    onError: (error) => {
+      toast.error("Failed to update product: " + error.message);
     },
   });
 
@@ -158,7 +185,12 @@ const Products = () => {
             </Button>
             <h1 className="text-3xl font-bold text-foreground">My Products</h1>
           </div>
-          <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+          <Dialog open={isAddDialogOpen || !!editingProduct} onOpenChange={(open) => {
+            if (!open) {
+              setIsAddDialogOpen(false);
+              setEditingProduct(null);
+            }
+          }}>
             <DialogTrigger asChild>
               <Button>
                 <Plus className="h-4 w-4 mr-2" />
@@ -167,7 +199,7 @@ const Products = () => {
             </DialogTrigger>
             <DialogContent className="max-h-[90vh] overflow-y-auto">
               <DialogHeader>
-                <DialogTitle>Create New Product</DialogTitle>
+                <DialogTitle>{editingProduct ? "Edit Product" : "Create New Product"}</DialogTitle>
               </DialogHeader>
               <div className="space-y-4">
                 <div>
@@ -176,11 +208,16 @@ const Products = () => {
                     placeholder="e.g., iPhone 15 Pro"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    disabled={!!editingProduct}
                   />
                 </div>
                 <div>
                   <Label>Category *</Label>
-                  <Select value={formData.category} onValueChange={(val) => setFormData({ ...formData, category: val })}>
+                  <Select 
+                    value={formData.category} 
+                    onValueChange={(val) => setFormData({ ...formData, category: val })}
+                    disabled={!!editingProduct}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Select category" />
                     </SelectTrigger>
@@ -200,6 +237,7 @@ const Products = () => {
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                     rows={3}
+                    disabled={!!editingProduct}
                   />
                 </div>
                 <div>
@@ -210,6 +248,7 @@ const Products = () => {
                     placeholder="0.00"
                     value={formData.base_price}
                     onChange={(e) => setFormData({ ...formData, base_price: e.target.value })}
+                    disabled={!!editingProduct}
                   />
                 </div>
                 <div>
@@ -241,19 +280,26 @@ const Products = () => {
                   />
                 </div>
                 <Button 
-                  onClick={() => addProductMutation.mutate(formData)} 
+                  onClick={() => {
+                    if (editingProduct) {
+                      updateProductMutation.mutate({ id: editingProduct.id, data: formData });
+                    } else {
+                      addProductMutation.mutate(formData);
+                    }
+                  }} 
                   className="w-full"
                   disabled={
-                    !formData.name || 
-                    !formData.category || 
-                    !formData.base_price || 
                     !formData.wholesale_price || 
                     !formData.stock_quantity || 
                     !formData.minimum_order_quantity ||
-                    addProductMutation.isPending
+                    (editingProduct ? updateProductMutation.isPending : addProductMutation.isPending) ||
+                    (!editingProduct && (!formData.name || !formData.category || !formData.base_price))
                   }
                 >
-                  {addProductMutation.isPending ? "Creating..." : "Create Product"}
+                  {editingProduct 
+                    ? (updateProductMutation.isPending ? "Updating..." : "Update Product")
+                    : (addProductMutation.isPending ? "Creating..." : "Create Product")
+                  }
                 </Button>
               </div>
             </DialogContent>
@@ -279,7 +325,24 @@ const Products = () => {
                   </div>
                   <StockBadge stockQuantity={product.stock_quantity} isAvailable={product.is_available} />
                   <div className="mt-4 space-y-2">
-                    <Button variant="outline" className="w-full">Edit</Button>
+                    <Button 
+                      variant="outline" 
+                      className="w-full"
+                      onClick={() => {
+                        setEditingProduct(product);
+                        setFormData({
+                          name: product.products.name,
+                          category: product.products.category,
+                          description: product.products.description || "",
+                          base_price: product.products.base_price.toString(),
+                          wholesale_price: product.price.toString(),
+                          stock_quantity: product.stock_quantity.toString(),
+                          minimum_order_quantity: product.minimum_order_quantity.toString(),
+                        });
+                      }}
+                    >
+                      Edit
+                    </Button>
                     <Button
                       variant="destructive"
                       className="w-full"

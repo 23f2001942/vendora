@@ -4,11 +4,40 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useNavigate } from "react-router-dom";
 import { Package, ShoppingCart, TrendingUp, Users } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 const RetailerDashboard = () => {
-  const { loading } = useRequireAuth('retailer');
+  const { user, loading } = useRequireAuth('retailer');
   const { signOut } = useAuth();
   const navigate = useNavigate();
+
+  const { data: retailer } = useQuery({
+    queryKey: ["retailer-profile", user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("retailers")
+        .select("*")
+        .eq("user_id", user?.id)
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!user,
+  });
+
+  const { data: productsCount } = useQuery({
+    queryKey: ["retailer-products-count", retailer?.id],
+    queryFn: async () => {
+      const { count, error } = await supabase
+        .from("retailer_products")
+        .select("*", { count: "exact", head: true })
+        .eq("retailer_id", retailer?.id);
+      if (error) throw error;
+      return count || 0;
+    },
+    enabled: !!retailer,
+  });
 
   const handleSignOut = async () => {
     await signOut();
@@ -49,8 +78,10 @@ const RetailerDashboard = () => {
               <Package className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">0</div>
-              <p className="text-xs text-muted-foreground">No products listed</p>
+              <div className="text-2xl font-bold">{productsCount || 0}</div>
+              <p className="text-xs text-muted-foreground">
+                {productsCount ? `${productsCount} products listed` : "No products listed"}
+              </p>
             </CardContent>
           </Card>
 

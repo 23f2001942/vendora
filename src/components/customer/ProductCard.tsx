@@ -50,7 +50,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
             View
           </Button>
           <AddToCartButton
-            productId={product.id}
+            productId={product.product_id}
             sellerId={product.retailer_id}
             stockQuantity={product.stock_quantity}
             isAvailable={product.is_available}

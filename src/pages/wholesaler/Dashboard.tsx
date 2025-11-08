@@ -4,11 +4,40 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useNavigate } from "react-router-dom";
 import { Package, Truck, TrendingUp, Users } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 const WholesalerDashboard = () => {
-  const { loading } = useRequireAuth('wholesaler');
+  const { user, loading } = useRequireAuth('wholesaler');
   const { signOut } = useAuth();
   const navigate = useNavigate();
+
+  const { data: wholesaler } = useQuery({
+    queryKey: ["wholesaler-profile", user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("wholesalers")
+        .select("*")
+        .eq("user_id", user?.id)
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!user,
+  });
+
+  const { data: productsCount } = useQuery({
+    queryKey: ["wholesaler-products-count", wholesaler?.id],
+    queryFn: async () => {
+      const { count, error } = await supabase
+        .from("wholesaler_products")
+        .select("*", { count: "exact", head: true })
+        .eq("wholesaler_id", wholesaler?.id);
+      if (error) throw error;
+      return count || 0;
+    },
+    enabled: !!wholesaler,
+  });
 
   const handleSignOut = async () => {
     await signOut();
@@ -49,8 +78,10 @@ const WholesalerDashboard = () => {
               <Package className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">0</div>
-              <p className="text-xs text-muted-foreground">No products listed</p>
+              <div className="text-2xl font-bold">{productsCount || 0}</div>
+              <p className="text-xs text-muted-foreground">
+                {productsCount ? `${productsCount} products listed` : "No products listed"}
+              </p>
             </CardContent>
           </Card>
 

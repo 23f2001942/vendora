@@ -4,11 +4,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useNavigate } from "react-router-dom";
 import { ShoppingCart, MapPin, Package, Heart } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useCartCount } from "@/hooks/useCartCount";
 
 const CustomerDashboard = () => {
   const { loading } = useRequireAuth('customer');
   const { signOut } = useAuth();
   const navigate = useNavigate();
+  const { data: cartCount } = useCartCount();
 
   const handleSignOut = async () => {
     await signOut();
@@ -60,8 +62,10 @@ const CustomerDashboard = () => {
               <ShoppingCart className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">0</div>
-              <p className="text-xs text-muted-foreground">Your cart is empty</p>
+              <div className="text-2xl font-bold">{cartCount || 0}</div>
+              <p className="text-xs text-muted-foreground">
+                {cartCount ? `${cartCount} items in cart` : "Your cart is empty"}
+              </p>
             </CardContent>
           </Card>
 
