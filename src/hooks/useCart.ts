@@ -8,21 +8,72 @@ export const useCart = () => {
   const { data: cartItems, isLoading } = useQuery({
     queryKey: ["cart"],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return [];
+
+      // Get cart items
+      const { data: cartData, error: cartError } = await supabase
         .from("cart_items")
-        .select(`
-          *,
-          products(
-            id,
-            name,
-            description,
-            category
-          )
-        `)
+        .select("*")
+        .eq("user_id", user.id)
         .order("created_at", { ascending: false });
 
-      if (error) throw error;
-      return data;
+      if (cartError) throw cartError;
+      if (!cartData || cartData.length === 0) return [];
+
+      // Get product details
+      const productIds = cartData.map(item => item.product_id);
+      const { data: products, error: productsError } = await supabase
+        .from("products")
+        .select("*")
+        .in("id", productIds);
+
+      if (productsError) throw productsError;
+
+      // Get seller details (profiles)
+      const sellerIds = cartData.map(item => item.seller_id);
+      const { data: sellers, error: sellersError } = await supabase
+        .from("profiles")
+        .select("id, full_name")
+        .in("id", sellerIds);
+
+      if (sellersError) throw sellersError;
+
+      // Get retailer details
+      const { data: retailers, error: retailersError } = await supabase
+        .from("retailers")
+        .select("id, user_id, business_name")
+        .in("user_id", sellerIds);
+
+      if (retailersError) throw retailersError;
+
+      // Get retailer products for price and stock
+      const { data: retailerProducts, error: rpError } = await supabase
+        .from("retailer_products")
+        .select("*")
+        .in("product_id", productIds);
+
+      if (rpError) throw rpError;
+
+      // Combine all data
+      return cartData.map(item => {
+        const product = products?.find(p => p.id === item.product_id);
+        const seller = sellers?.find(s => s.id === item.seller_id);
+        const retailer = retailers?.find(r => r.user_id === item.seller_id);
+        const retailerProduct = retailerProducts?.find(
+          rp => rp.product_id === item.product_id && rp.retailer_id === retailer?.id
+        );
+
+        return {
+          ...item,
+          products: product,
+          seller: seller,
+          retailer: retailer,
+          price: retailerProduct?.price || product?.base_price || 0,
+          stock_quantity: retailerProduct?.stock_quantity || 0,
+          is_available: retailerProduct?.is_available || false,
+        };
+      });
     },
   });
 

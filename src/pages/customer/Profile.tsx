@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useRequireAuth } from "@/hooks/useRequireAuth";
 import { useProfile } from "@/hooks/useProfile";
+import { AddressManagement } from "@/components/customer/AddressManagement";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -48,7 +49,7 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen bg-background p-6">
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-2xl mx-auto space-y-6">
         <div className="flex items-center gap-4 mb-6">
           <Button variant="ghost" size="icon" onClick={() => navigate("/customer/dashboard")}>
             <ArrowLeft className="h-5 w-5" />
@@ -97,6 +98,8 @@ const Profile = () => {
             </form>
           </CardContent>
         </Card>
+
+        <AddressManagement />
       </div>
     </div>
   );

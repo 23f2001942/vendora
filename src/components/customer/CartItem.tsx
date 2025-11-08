@@ -15,11 +15,11 @@ interface CartItemProps {
 
 export const CartItem = ({ item, onUpdateQuantity, onRemove }: CartItemProps) => {
   const [quantity, setQuantity] = useState(item.quantity);
-  const product = item.retailer_products.products;
-  const retailer = item.retailer_products.retailers;
-  const price = item.retailer_products.price;
-  const stockQuantity = item.retailer_products.stock_quantity;
-  const isAvailable = item.retailer_products.is_available;
+  const product = item.products;
+  const retailer = item.retailer;
+  const price = item.price;
+  const stockQuantity = item.stock_quantity;
+  const isAvailable = item.is_available;
 
   const handleQuantityChange = (newQuantity: number) => {
     if (newQuantity < 1) return;
@@ -40,9 +40,9 @@ export const CartItem = ({ item, onUpdateQuantity, onRemove }: CartItemProps) =>
           <div className="flex-1">
             <div className="flex items-start justify-between mb-2">
               <div>
-                <h3 className="font-semibold text-foreground">{product.name}</h3>
-                <p className="text-sm text-muted-foreground">From: {retailer.business_name}</p>
-                <Badge variant="outline" className="mt-1">{product.category}</Badge>
+                <h3 className="font-semibold text-foreground">{product?.name}</h3>
+                <p className="text-sm text-muted-foreground">From: {retailer?.business_name || 'Unknown'}</p>
+                <Badge variant="outline" className="mt-1">{product?.category}</Badge>
               </div>
               <Button
                 variant="ghost"

@@ -10,18 +10,18 @@ interface CartSummaryProps {
 
 export const CartSummary = ({ items, onCheckout }: CartSummaryProps) => {
   const subtotal = items.reduce((sum, item) => {
-    return sum + (item.retailer_products.price * item.quantity);
+    return sum + (item.price * item.quantity);
   }, 0);
 
   const tax = subtotal * 0.1; // 10% tax
   const total = subtotal + tax;
 
   const hasOutOfStock = items.some(
-    (item) => !item.retailer_products.is_available || item.retailer_products.stock_quantity === 0
+    (item) => !item.is_available || item.stock_quantity === 0
   );
 
   const hasLowStock = items.some(
-    (item) => item.quantity > item.retailer_products.stock_quantity
+    (item) => item.quantity > item.stock_quantity
   );
 
   const canCheckout = !hasOutOfStock && !hasLowStock && items.length > 0;

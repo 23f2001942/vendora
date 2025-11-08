@@ -38,10 +38,10 @@ const Cart = () => {
 
   // Group items by retailer
   const groupedItems = cartItems?.reduce((acc: any, item: any) => {
-    const retailerId = item.retailer_products.retailers.id;
+    const retailerId = item.retailer?.id || item.seller_id;
     if (!acc[retailerId]) {
       acc[retailerId] = {
-        retailer: item.retailer_products.retailers,
+        retailer: item.retailer,
         items: [],
       };
     }
@@ -68,9 +68,9 @@ const Cart = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 space-y-6">
               {Object.values(groupedItems).map((group: any) => (
-                <div key={group.retailer.id} className="space-y-4">
+                <div key={group.retailer?.id || 'unknown'} className="space-y-4">
                   <h2 className="text-xl font-semibold text-foreground">
-                    {group.retailer.business_name}
+                    {group.retailer?.business_name || 'Unknown Retailer'}
                   </h2>
                   {group.items.map((item: any) => (
                     <CartItem
