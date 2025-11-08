@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { StockBadge } from "@/components/shared/StockBadge";
 import { PriceDisplay } from "@/components/shared/PriceDisplay";
 import { Badge } from "@/components/ui/badge";
@@ -41,15 +42,6 @@ const Products = () => {
     enabled: !!user,
   });
 
-  const { data: allProducts } = useQuery({
-    queryKey: ["all-products"],
-    queryFn: async () => {
-      const { data, error } = await supabase.from("products").select("*");
-      if (error) throw error;
-      return data;
-    },
-  });
-
   const { data: products, isLoading } = useQuery({
     queryKey: ["my-wholesaler-products", wholesaler?.id, selectedCategory],
     queryFn: async () => {
@@ -70,29 +62,62 @@ const Products = () => {
   });
 
   const [formData, setFormData] = useState({
-    product_id: "",
-    price: "",
+    name: "",
+    category: "",
+    description: "",
+    base_price: "",
+    wholesale_price: "",
     stock_quantity: "",
     minimum_order_quantity: "",
   });
 
   const addProductMutation = useMutation({
     mutationFn: async (data: any) => {
-      const { error } = await supabase.from("wholesaler_products").insert({
-        wholesaler_id: wholesaler?.id,
-        product_id: data.product_id,
-        price: parseFloat(data.price),
-        stock_quantity: parseInt(data.stock_quantity),
-        minimum_order_quantity: parseInt(data.minimum_order_quantity),
-        is_available: true,
-      });
-      if (error) throw error;
+      // First, create the product in the products table
+      const { data: newProduct, error: productError } = await supabase
+        .from("products")
+        .insert({
+          name: data.name,
+          category: data.category,
+          description: data.description,
+          base_price: parseFloat(data.base_price),
+        })
+        .select()
+        .single();
+
+      if (productError) throw productError;
+
+      // Then, add it to wholesaler_products
+      const { error: wholesalerProductError } = await supabase
+        .from("wholesaler_products")
+        .insert({
+          wholesaler_id: wholesaler?.id,
+          product_id: newProduct.id,
+          price: parseFloat(data.wholesale_price),
+          stock_quantity: parseInt(data.stock_quantity),
+          minimum_order_quantity: parseInt(data.minimum_order_quantity),
+          is_available: true,
+        });
+
+      if (wholesalerProductError) throw wholesalerProductError;
+      return newProduct;
     },
-    onSuccess: () => {
+    onSuccess: (newProduct) => {
       queryClient.invalidateQueries({ queryKey: ["my-wholesaler-products"] });
-      toast.success("Product added successfully");
+      toast.success(`"${newProduct.name}" added successfully`);
       setIsAddDialogOpen(false);
-      setFormData({ product_id: "", price: "", stock_quantity: "", minimum_order_quantity: "" });
+      setFormData({
+        name: "",
+        category: "",
+        description: "",
+        base_price: "",
+        wholesale_price: "",
+        stock_quantity: "",
+        minimum_order_quantity: "",
+      });
+    },
+    onError: (error) => {
+      toast.error("Failed to add product: " + error.message);
     },
   });
 
@@ -140,53 +165,95 @@ const Products = () => {
                 Add Product
               </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="max-h-[90vh] overflow-y-auto">
               <DialogHeader>
-                <DialogTitle>Add New Product</DialogTitle>
+                <DialogTitle>Create New Product</DialogTitle>
               </DialogHeader>
               <div className="space-y-4">
                 <div>
-                  <Label>Select Product</Label>
-                  <Select value={formData.product_id} onValueChange={(val) => setFormData({ ...formData, product_id: val })}>
+                  <Label>Product Name *</Label>
+                  <Input
+                    placeholder="e.g., iPhone 15 Pro"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <Label>Category *</Label>
+                  <Select value={formData.category} onValueChange={(val) => setFormData({ ...formData, category: val })}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Choose a product" />
+                      <SelectValue placeholder="Select category" />
                     </SelectTrigger>
                     <SelectContent>
-                      {allProducts?.map((product) => (
-                        <SelectItem key={product.id} value={product.id}>
-                          {product.name} ({product.category})
+                      {CATEGORIES.map((category) => (
+                        <SelectItem key={category} value={category}>
+                          {category.charAt(0).toUpperCase() + category.slice(1)}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
                 <div>
-                  <Label>Wholesale Price ($)</Label>
-                  <Input
-                    type="number"
-                    step="0.01"
-                    value={formData.price}
-                    onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                  <Label>Description</Label>
+                  <Textarea
+                    placeholder="Describe your product..."
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    rows={3}
                   />
                 </div>
                 <div>
-                  <Label>Stock Quantity</Label>
+                  <Label>Base Price ($) *</Label>
                   <Input
                     type="number"
+                    step="0.01"
+                    placeholder="0.00"
+                    value={formData.base_price}
+                    onChange={(e) => setFormData({ ...formData, base_price: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <Label>Wholesale Price ($) *</Label>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    placeholder="0.00"
+                    value={formData.wholesale_price}
+                    onChange={(e) => setFormData({ ...formData, wholesale_price: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <Label>Stock Quantity *</Label>
+                  <Input
+                    type="number"
+                    placeholder="0"
                     value={formData.stock_quantity}
                     onChange={(e) => setFormData({ ...formData, stock_quantity: e.target.value })}
                   />
                 </div>
                 <div>
-                  <Label>Minimum Order Quantity</Label>
+                  <Label>Minimum Order Quantity *</Label>
                   <Input
                     type="number"
+                    placeholder="1"
                     value={formData.minimum_order_quantity}
                     onChange={(e) => setFormData({ ...formData, minimum_order_quantity: e.target.value })}
                   />
                 </div>
-                <Button onClick={() => addProductMutation.mutate(formData)} className="w-full">
-                  Add Product
+                <Button 
+                  onClick={() => addProductMutation.mutate(formData)} 
+                  className="w-full"
+                  disabled={
+                    !formData.name || 
+                    !formData.category || 
+                    !formData.base_price || 
+                    !formData.wholesale_price || 
+                    !formData.stock_quantity || 
+                    !formData.minimum_order_quantity ||
+                    addProductMutation.isPending
+                  }
+                >
+                  {addProductMutation.isPending ? "Creating..." : "Create Product"}
                 </Button>
               </div>
             </DialogContent>

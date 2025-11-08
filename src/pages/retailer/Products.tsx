@@ -3,22 +3,29 @@ import { useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useRequireAuth } from "@/hooks/useRequireAuth";
-import { useAuth } from "@/contexts/AuthContext";
 import { CategoryTabs } from "@/components/shared/CategoryTabs";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Plus } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { StockBadge } from "@/components/shared/StockBadge";
 import { PriceDisplay } from "@/components/shared/PriceDisplay";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 
+const CATEGORIES = ["electronics", "clothing", "food", "home", "beauty", "sports", "books", "toys", "other"];
+
 const Products = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useRequireAuth("retailer");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const queryClient = useQueryClient();
 
   const { data: retailer } = useQuery({
@@ -52,6 +59,63 @@ const Products = () => {
       return data;
     },
     enabled: !!retailer,
+  });
+
+  const [formData, setFormData] = useState({
+    name: "",
+    category: "",
+    description: "",
+    base_price: "",
+    retail_price: "",
+    stock_quantity: "",
+  });
+
+  const addProductMutation = useMutation({
+    mutationFn: async (data: any) => {
+      // First, create the product in the products table
+      const { data: newProduct, error: productError } = await supabase
+        .from("products")
+        .insert({
+          name: data.name,
+          category: data.category,
+          description: data.description,
+          base_price: parseFloat(data.base_price),
+        })
+        .select()
+        .single();
+
+      if (productError) throw productError;
+
+      // Then, add it to retailer_products
+      const { error: retailerProductError } = await supabase
+        .from("retailer_products")
+        .insert({
+          retailer_id: retailer?.id,
+          product_id: newProduct.id,
+          price: parseFloat(data.retail_price),
+          stock_quantity: parseInt(data.stock_quantity),
+          is_available: true,
+        });
+
+      if (retailerProductError) throw retailerProductError;
+      return newProduct;
+    },
+    onSuccess: (newProduct) => {
+      queryClient.invalidateQueries({ queryKey: ["my-retailer-products"] });
+      toast.success(`"${newProduct.name}" added successfully`);
+      setIsAddDialogOpen(false);
+      setFormData({
+        name: "",
+        category: "",
+        description: "",
+        base_price: "",
+        retail_price: "",
+        stock_quantity: "",
+      });
+    },
+    onError: (error) => {
+      toast.error("Failed to add product: " + error.message);
+    },
   });
 
   const deleteMutation = useMutation({
@@ -91,10 +155,101 @@ const Products = () => {
             </Button>
             <h1 className="text-3xl font-bold text-foreground">My Products</h1>
           </div>
-          <Button onClick={() => navigate("/retailer/wholesalers")}>
-            <Plus className="h-4 w-4 mr-2" />
-            Add Products
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => navigate("/retailer/wholesalers")}>
+              Browse Wholesalers
+            </Button>
+            <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+              <DialogTrigger asChild>
+                <Button>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Create Product
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-h-[90vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle>Create New Product</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div>
+                    <Label>Product Name *</Label>
+                    <Input
+                      placeholder="e.g., Premium Coffee Beans"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    />
+                  </div>
+                  <div>
+                    <Label>Category *</Label>
+                    <Select value={formData.category} onValueChange={(val) => setFormData({ ...formData, category: val })}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select category" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {CATEGORIES.map((category) => (
+                          <SelectItem key={category} value={category}>
+                            {category.charAt(0).toUpperCase() + category.slice(1)}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label>Description</Label>
+                    <Textarea
+                      placeholder="Describe your product..."
+                      value={formData.description}
+                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                      rows={3}
+                    />
+                  </div>
+                  <div>
+                    <Label>Base Price ($) *</Label>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      placeholder="0.00"
+                      value={formData.base_price}
+                      onChange={(e) => setFormData({ ...formData, base_price: e.target.value })}
+                    />
+                  </div>
+                  <div>
+                    <Label>Retail Price ($) *</Label>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      placeholder="0.00"
+                      value={formData.retail_price}
+                      onChange={(e) => setFormData({ ...formData, retail_price: e.target.value })}
+                    />
+                  </div>
+                  <div>
+                    <Label>Stock Quantity *</Label>
+                    <Input
+                      type="number"
+                      placeholder="0"
+                      value={formData.stock_quantity}
+                      onChange={(e) => setFormData({ ...formData, stock_quantity: e.target.value })}
+                    />
+                  </div>
+                  <Button 
+                    onClick={() => addProductMutation.mutate(formData)} 
+                    className="w-full"
+                    disabled={
+                      !formData.name || 
+                      !formData.category || 
+                      !formData.base_price || 
+                      !formData.retail_price || 
+                      !formData.stock_quantity ||
+                      addProductMutation.isPending
+                    }
+                  >
+                    {addProductMutation.isPending ? "Creating..." : "Create Product"}
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
 
         <div className="mb-6">
