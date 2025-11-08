@@ -97,9 +97,12 @@ const CustomerDashboard = () => {
             <CardTitle>Quick Actions</CardTitle>
             <CardDescription>Start shopping or manage your account</CardDescription>
           </CardHeader>
-          <CardContent className="grid md:grid-cols-3 gap-4">
+          <CardContent className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
             <Button className="h-20" variant="outline" onClick={() => navigate('/customer/retailers')}>
               Browse Retailers
+            </Button>
+            <Button className="h-20" variant="outline" onClick={() => navigate('/customer/cart')}>
+              View Cart
             </Button>
             <Button className="h-20" variant="outline" onClick={() => console.log('View Orders')}>
               View Orders
