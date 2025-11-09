@@ -15,7 +15,7 @@ type Step = 'location' | 'phone' | 'role' | 'business';
 
 export default function Onboarding() {
   const navigate = useNavigate();
-  const { user, loading, refreshProfile } = useAuth();
+  const { user, loading, refreshProfile, roles } = useAuth();
   const [step, setStep] = useState<Step>('location');
   const [submitting, setSubmitting] = useState(false);
 
@@ -38,10 +38,21 @@ export default function Onboarding() {
 
   useEffect(() => {
     // Wait for auth to finish loading before checking user
-    if (!loading && !user) {
-      navigate('/auth/login');
+    if (!loading) {
+      if (!user) {
+        navigate('/auth/login');
+      } else if (roles.length > 0) {
+        // User already has a role, redirect to dashboard
+        if (roles.includes('customer')) {
+          navigate('/customer/dashboard');
+        } else if (roles.includes('retailer')) {
+          navigate('/retailer/dashboard');
+        } else if (roles.includes('wholesaler')) {
+          navigate('/wholesaler/dashboard');
+        }
+      }
     }
-  }, [user, loading, navigate]);
+  }, [user, loading, roles, navigate]);
 
   const handleLocationNext = () => {
     if (!location) {
