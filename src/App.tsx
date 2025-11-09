@@ -26,10 +26,32 @@ import RetailerProfile from "./pages/retailer/Profile";
 import WholesalerDashboard from "./pages/wholesaler/Dashboard";
 import WholesalerProducts from "./pages/wholesaler/Products";
 import WholesalerProfile from "./pages/wholesaler/Profile";
+import { useEffect } from "react";
 
 const queryClient = new QueryClient();
 
-const App = () => (
+// Initialize theme before app renders
+const initTheme = () => {
+  const savedTheme = localStorage.getItem("theme") as "light" | "dark" | null;
+  if (savedTheme) {
+    document.documentElement.classList.toggle("dark", savedTheme === "dark");
+  } else {
+    // Default to dark mode
+    localStorage.setItem("theme", "dark");
+    document.documentElement.classList.add("dark");
+  }
+};
+
+// Run immediately
+initTheme();
+
+const App = () => {
+  useEffect(() => {
+    // Ensure theme persists on navigation
+    initTheme();
+  }, []);
+
+  return (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
       <TooltipProvider>
@@ -69,6 +91,7 @@ const App = () => (
       </TooltipProvider>
     </AuthProvider>
   </QueryClientProvider>
-);
+  );
+};
 
 export default App;

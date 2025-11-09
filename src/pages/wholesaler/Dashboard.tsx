@@ -1,15 +1,14 @@
 import { useRequireAuth } from "@/hooks/useRequireAuth";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { Package, Truck, TrendingUp, Users } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { NavBar } from "@/components/NavBar";
+import { Button } from "@/components/ui/button";
 
 const WholesalerDashboard = () => {
   const { user, loading } = useRequireAuth('wholesaler');
-  const { signOut } = useAuth();
   const navigate = useNavigate();
 
   const { data: wholesaler } = useQuery({
@@ -39,11 +38,6 @@ const WholesalerDashboard = () => {
     enabled: !!wholesaler,
   });
 
-  const handleSignOut = async () => {
-    await signOut();
-    navigate('/');
-  };
-
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -54,15 +48,7 @@ const WholesalerDashboard = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b bg-card">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-primary">SmartMartX</h1>
-          <Button variant="outline" onClick={handleSignOut}>
-            Sign Out
-          </Button>
-        </div>
-      </header>
+      <NavBar />
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
