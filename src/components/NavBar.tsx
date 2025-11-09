@@ -11,16 +11,18 @@ export const NavBar = () => {
   const location = useLocation();
   const { user, signOut } = useAuth();
   const { profile } = useProfile();
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [theme, setTheme] = useState<"light" | "dark">("dark");
 
   useEffect(() => {
-    // Check for saved theme preference or default to light
+    // Check for saved theme preference or default to dark
     const savedTheme = localStorage.getItem("theme") as "light" | "dark" | null;
     if (savedTheme) {
       setTheme(savedTheme);
       document.documentElement.classList.toggle("dark", savedTheme === "dark");
-    } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+    } else {
+      // Default to dark mode
       setTheme("dark");
+      localStorage.setItem("theme", "dark");
       document.documentElement.classList.add("dark");
     }
   }, []);
