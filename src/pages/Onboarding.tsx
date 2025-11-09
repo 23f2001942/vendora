@@ -15,9 +15,9 @@ type Step = 'location' | 'phone' | 'role' | 'business';
 
 export default function Onboarding() {
   const navigate = useNavigate();
-  const { user, refreshProfile } = useAuth();
+  const { user, loading, refreshProfile } = useAuth();
   const [step, setStep] = useState<Step>('location');
-  const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   const [phone, setPhone] = useState('');
   const [location, setLocation] = useState<any>(null);
@@ -37,10 +37,11 @@ export default function Onboarding() {
   });
 
   useEffect(() => {
-    if (!user) {
+    // Wait for auth to finish loading before checking user
+    if (!loading && !user) {
       navigate('/auth/login');
     }
-  }, [user, navigate]);
+  }, [user, loading, navigate]);
 
   const handleLocationNext = () => {
     if (!location) {
@@ -75,7 +76,7 @@ export default function Onboarding() {
       return;
     }
 
-    setLoading(true);
+    setSubmitting(true);
 
     try {
       const provider = user.app_metadata?.provider || 'google';
@@ -133,7 +134,7 @@ export default function Onboarding() {
     } catch (error: any) {
       toast.error(error.message || 'Failed to complete profile');
     } finally {
-      setLoading(false);
+      setSubmitting(false);
     }
   };
 
@@ -206,8 +207,8 @@ export default function Onboarding() {
                 <Button variant="outline" className="w-full" onClick={() => setStep('role')}>
                   Back
                 </Button>
-                <Button className="w-full" onClick={handleFinalSubmit} disabled={loading}>
-                  {loading ? 'Completing...' : 'Complete Profile'}
+                <Button className="w-full" onClick={handleFinalSubmit} disabled={submitting}>
+                  {submitting ? 'Completing...' : 'Complete Profile'}
                 </Button>
               </div>
             </div>
