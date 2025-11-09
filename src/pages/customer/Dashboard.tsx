@@ -93,9 +93,6 @@ const CustomerDashboard = () => {
             <Button className="h-20" variant="outline" onClick={() => console.log('View Orders')}>
               View Orders
             </Button>
-            <Button className="h-20" variant="outline" onClick={() => navigate('/customer/profile')}>
-              Update Profile
-            </Button>
           </CardContent>
         </Card>
       </main>
