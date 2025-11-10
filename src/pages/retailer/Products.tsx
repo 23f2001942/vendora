@@ -185,12 +185,14 @@ const Products = () => {
             <Button variant="outline" onClick={() => navigate("/retailer/wholesalers")}>
               Browse Wholesalers
             </Button>
-            <Dialog open={isAddDialogOpen || !!editingProduct} onOpenChange={(open) => {
-              if (!open) {
-                setIsAddDialogOpen(false);
-                setEditingProduct(null);
-              }
-            }}>
+          <Dialog open={isAddDialogOpen || !!editingProduct} onOpenChange={(open) => {
+            if (open) {
+              setIsAddDialogOpen(true);
+            } else {
+              setIsAddDialogOpen(false);
+              setEditingProduct(null);
+            }
+          }}>
               <DialogTrigger asChild>
                 <Button>
                   <Plus className="h-4 w-4 mr-2" />

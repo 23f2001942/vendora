@@ -186,7 +186,9 @@ const Products = () => {
             <h1 className="text-3xl font-bold text-foreground">My Products</h1>
           </div>
           <Dialog open={isAddDialogOpen || !!editingProduct} onOpenChange={(open) => {
-            if (!open) {
+            if (open) {
+              setIsAddDialogOpen(true);
+            } else {
               setIsAddDialogOpen(false);
               setEditingProduct(null);
             }
