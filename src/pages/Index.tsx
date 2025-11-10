@@ -78,19 +78,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="container mx-auto px-4 py-16 text-center">
-        <div className="bg-card border rounded-lg p-12 shadow-sm">
-          <h3 className="text-3xl font-bold mb-4 text-foreground">Ready to Start?</h3>
-          <p className="text-lg mb-6 text-muted-foreground">
-            Join thousands of users already trading on SmartMartX
-          </p>
-          <Button size="lg" onClick={() => navigate('/auth/register')}>
-            Create Your Account
-          </Button>
-        </div>
-      </section>
-
       {/* Footer */}
       <footer className="border-t mt-16">
         <div className="container mx-auto px-4 py-8 text-center text-muted-foreground">
