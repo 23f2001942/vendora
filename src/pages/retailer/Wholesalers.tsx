@@ -49,7 +49,7 @@ const Wholesalers = () => {
                   </div>
                   {wholesaler.minimum_order_value && (
                     <p className="text-sm text-muted-foreground mb-4">
-                      Min Order: ${wholesaler.minimum_order_value}
+                      Min Order: ₹{wholesaler.minimum_order_value}
                     </p>
                   )}
                   <Button

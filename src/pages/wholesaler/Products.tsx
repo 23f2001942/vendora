@@ -241,7 +241,7 @@ const Products = () => {
                   />
                 </div>
                 <div>
-                  <Label>Base Price ($) *</Label>
+                  <Label>Base Price (₹) *</Label>
                   <Input
                     type="number"
                     step="0.01"
@@ -252,7 +252,7 @@ const Products = () => {
                   />
                 </div>
                 <div>
-                  <Label>Wholesale Price ($) *</Label>
+                  <Label>Wholesale Price (₹) *</Label>
                   <Input
                     type="number"
                     step="0.01"

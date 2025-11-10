@@ -174,11 +174,11 @@ const WholesalerProducts = () => {
                           <Label>Product</Label>
                           <p className="font-medium">{selectedProduct?.products.name}</p>
                           <p className="text-sm text-muted-foreground">
-                            Wholesale Price: ${selectedProduct?.price}
+                            Wholesale Price: ₹{selectedProduct?.price}
                           </p>
                         </div>
                         <div>
-                          <Label htmlFor="retail-price">Your Retail Price ($)</Label>
+                          <Label htmlFor="retail-price">Your Retail Price (₹)</Label>
                           <Input
                             id="retail-price"
                             type="number"

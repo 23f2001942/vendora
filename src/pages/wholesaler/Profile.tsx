@@ -107,7 +107,7 @@ const Profile = () => {
               </div>
 
               <div>
-                <Label htmlFor="minimum_order_value">Minimum Order Value ($)</Label>
+                <Label htmlFor="minimum_order_value">Minimum Order Value (₹)</Label>
                 <Input
                   id="minimum_order_value"
                   type="number"

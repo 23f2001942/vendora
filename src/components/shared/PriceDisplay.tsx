@@ -6,7 +6,7 @@ interface PriceDisplayProps {
 export const PriceDisplay = ({ price, className = "" }: PriceDisplayProps) => {
   return (
     <span className={`font-semibold ${className}`}>
-      ${price.toFixed(2)}
+      ₹{price.toFixed(2)}
     </span>
   );
 };
