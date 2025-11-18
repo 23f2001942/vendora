@@ -26,6 +26,7 @@ import RetailerProfile from "./pages/retailer/Profile";
 import WholesalerDashboard from "./pages/wholesaler/Dashboard";
 import WholesalerProducts from "./pages/wholesaler/Products";
 import WholesalerProfile from "./pages/wholesaler/Profile";
+import SeedData from "./pages/admin/SeedData";
 import { useEffect } from "react";
 
 const queryClient = new QueryClient();
@@ -84,6 +85,9 @@ const App = () => {
             <Route path="/wholesaler/dashboard" element={<WholesalerDashboard />} />
             <Route path="/wholesaler/products" element={<WholesalerProducts />} />
             <Route path="/wholesaler/profile" element={<WholesalerProfile />} />
+            
+            {/* Admin/Testing Routes */}
+            <Route path="/admin/seed-data" element={<SeedData />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
