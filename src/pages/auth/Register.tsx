@@ -147,7 +147,7 @@ export default function Register() {
       }
 
       toast.success('Account created successfully!');
-      navigate('/');
+      // Stay on current page - redirect logic handled in Index.tsx
     } catch (error: any) {
       toast.error(error.message || 'Failed to create account');
     } finally {
