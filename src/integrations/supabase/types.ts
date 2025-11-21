@@ -117,6 +117,106 @@ export type Database = {
         }
         Relationships: []
       }
+      delivery_status_history: {
+        Row: {
+          created_at: string
+          delivery_tracking_id: string
+          id: string
+          latitude: number | null
+          location: string | null
+          longitude: number | null
+          notes: string | null
+          status: Database["public"]["Enums"]["delivery_status"]
+          timestamp: string
+        }
+        Insert: {
+          created_at?: string
+          delivery_tracking_id: string
+          id?: string
+          latitude?: number | null
+          location?: string | null
+          longitude?: number | null
+          notes?: string | null
+          status: Database["public"]["Enums"]["delivery_status"]
+          timestamp?: string
+        }
+        Update: {
+          created_at?: string
+          delivery_tracking_id?: string
+          id?: string
+          latitude?: number | null
+          location?: string | null
+          longitude?: number | null
+          notes?: string | null
+          status?: Database["public"]["Enums"]["delivery_status"]
+          timestamp?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "delivery_status_history_delivery_tracking_id_fkey"
+            columns: ["delivery_tracking_id"]
+            isOneToOne: false
+            referencedRelation: "delivery_tracking"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      delivery_tracking: {
+        Row: {
+          actual_delivery_time: string | null
+          created_at: string
+          current_latitude: number | null
+          current_longitude: number | null
+          current_status: Database["public"]["Enums"]["delivery_status"]
+          delivery_notes: string | null
+          delivery_partner_name: string
+          delivery_partner_phone: string
+          estimated_delivery_time: string
+          id: string
+          order_id: string
+          tracking_number: string
+          updated_at: string
+        }
+        Insert: {
+          actual_delivery_time?: string | null
+          created_at?: string
+          current_latitude?: number | null
+          current_longitude?: number | null
+          current_status?: Database["public"]["Enums"]["delivery_status"]
+          delivery_notes?: string | null
+          delivery_partner_name: string
+          delivery_partner_phone: string
+          estimated_delivery_time: string
+          id?: string
+          order_id: string
+          tracking_number: string
+          updated_at?: string
+        }
+        Update: {
+          actual_delivery_time?: string | null
+          created_at?: string
+          current_latitude?: number | null
+          current_longitude?: number | null
+          current_status?: Database["public"]["Enums"]["delivery_status"]
+          delivery_notes?: string | null
+          delivery_partner_name?: string
+          delivery_partner_phone?: string
+          estimated_delivery_time?: string
+          id?: string
+          order_id?: string
+          tracking_number?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "delivery_tracking_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: true
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       feedback: {
         Row: {
           comment: string | null
@@ -216,6 +316,57 @@ export type Database = {
             columns: ["seller_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          created_at: string
+          id: string
+          is_read: boolean | null
+          message: string
+          related_order_id: string | null
+          related_transaction_id: string | null
+          title: string
+          type: Database["public"]["Enums"]["notification_type"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_read?: boolean | null
+          message: string
+          related_order_id?: string | null
+          related_transaction_id?: string | null
+          title: string
+          type: Database["public"]["Enums"]["notification_type"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_read?: boolean | null
+          message?: string
+          related_order_id?: string | null
+          related_transaction_id?: string | null
+          title?: string
+          type?: Database["public"]["Enums"]["notification_type"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_related_order_id_fkey"
+            columns: ["related_order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_related_transaction_id_fkey"
+            columns: ["related_transaction_id"]
+            isOneToOne: false
+            referencedRelation: "payment_transactions"
             referencedColumns: ["id"]
           },
         ]
@@ -324,6 +475,105 @@ export type Database = {
             columns: ["seller_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payment_methods: {
+        Row: {
+          card_brand: string | null
+          card_last_four: string | null
+          created_at: string
+          id: string
+          is_default: boolean | null
+          method_type: Database["public"]["Enums"]["payment_method_type"]
+          updated_at: string
+          upi_id: string | null
+          user_id: string
+        }
+        Insert: {
+          card_brand?: string | null
+          card_last_four?: string | null
+          created_at?: string
+          id?: string
+          is_default?: boolean | null
+          method_type: Database["public"]["Enums"]["payment_method_type"]
+          updated_at?: string
+          upi_id?: string | null
+          user_id: string
+        }
+        Update: {
+          card_brand?: string | null
+          card_last_four?: string | null
+          created_at?: string
+          id?: string
+          is_default?: boolean | null
+          method_type?: Database["public"]["Enums"]["payment_method_type"]
+          updated_at?: string
+          upi_id?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      payment_transactions: {
+        Row: {
+          amount: number
+          completed_at: string | null
+          created_at: string
+          failure_reason: string | null
+          gateway_response: Json | null
+          id: string
+          order_id: string
+          payment_method_id: string | null
+          payment_method_type: Database["public"]["Enums"]["payment_method_type"]
+          status: Database["public"]["Enums"]["payment_status"]
+          transaction_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          completed_at?: string | null
+          created_at?: string
+          failure_reason?: string | null
+          gateway_response?: Json | null
+          id?: string
+          order_id: string
+          payment_method_id?: string | null
+          payment_method_type: Database["public"]["Enums"]["payment_method_type"]
+          status?: Database["public"]["Enums"]["payment_status"]
+          transaction_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          completed_at?: string | null
+          created_at?: string
+          failure_reason?: string | null
+          gateway_response?: Json | null
+          id?: string
+          order_id?: string
+          payment_method_id?: string | null
+          payment_method_type?: Database["public"]["Enums"]["payment_method_type"]
+          status?: Database["public"]["Enums"]["payment_status"]
+          transaction_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_transactions_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_transactions_payment_method_id_fkey"
+            columns: ["payment_method_id"]
+            isOneToOne: false
+            referencedRelation: "payment_methods"
             referencedColumns: ["id"]
           },
         ]
@@ -637,6 +887,8 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      generate_tracking_number: { Args: never; Returns: string }
+      generate_transaction_id: { Args: never; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -644,10 +896,36 @@ export type Database = {
         }
         Returns: boolean
       }
+      validate_order_status_transition: {
+        Args: {
+          current_status: Database["public"]["Enums"]["delivery_status"]
+          new_status: Database["public"]["Enums"]["delivery_status"]
+        }
+        Returns: boolean
+      }
     }
     Enums: {
       app_role: "customer" | "retailer" | "wholesaler"
       auth_provider: "email" | "google" | "facebook"
+      delivery_status:
+        | "pending"
+        | "confirmed"
+        | "packed"
+        | "picked_up"
+        | "in_transit"
+        | "out_for_delivery"
+        | "delivered"
+        | "cancelled"
+      notification_type:
+        | "order_placed"
+        | "payment_success"
+        | "payment_failed"
+        | "order_confirmed"
+        | "order_packed"
+        | "order_shipped"
+        | "out_for_delivery"
+        | "delivered"
+        | "order_cancelled"
       order_status:
         | "pending"
         | "confirmed"
@@ -656,6 +934,13 @@ export type Database = {
         | "delivered"
         | "cancelled"
       order_type: "customer_to_retailer" | "retailer_to_wholesaler"
+      payment_method_type: "card" | "upi" | "netbanking" | "cod"
+      payment_status:
+        | "pending"
+        | "processing"
+        | "completed"
+        | "failed"
+        | "refunded"
       product_category:
         | "electronics"
         | "clothing"
@@ -795,6 +1080,27 @@ export const Constants = {
     Enums: {
       app_role: ["customer", "retailer", "wholesaler"],
       auth_provider: ["email", "google", "facebook"],
+      delivery_status: [
+        "pending",
+        "confirmed",
+        "packed",
+        "picked_up",
+        "in_transit",
+        "out_for_delivery",
+        "delivered",
+        "cancelled",
+      ],
+      notification_type: [
+        "order_placed",
+        "payment_success",
+        "payment_failed",
+        "order_confirmed",
+        "order_packed",
+        "order_shipped",
+        "out_for_delivery",
+        "delivered",
+        "order_cancelled",
+      ],
       order_status: [
         "pending",
         "confirmed",
@@ -804,6 +1110,14 @@ export const Constants = {
         "cancelled",
       ],
       order_type: ["customer_to_retailer", "retailer_to_wholesaler"],
+      payment_method_type: ["card", "upi", "netbanking", "cod"],
+      payment_status: [
+        "pending",
+        "processing",
+        "completed",
+        "failed",
+        "refunded",
+      ],
       product_category: [
         "electronics",
         "clothing",
