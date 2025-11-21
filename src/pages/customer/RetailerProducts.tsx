@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useOptionalAuth } from "@/hooks/useOptionalAuth";
+import { useRequireAuth } from "@/hooks/useRequireAuth";
 import { ProductCard } from "@/components/customer/ProductCard";
 import { CategoryTabs } from "@/components/shared/CategoryTabs";
 import { EmptyState } from "@/components/shared/EmptyState";
@@ -14,7 +14,7 @@ import { ArrowLeft, Search } from "lucide-react";
 const RetailerProducts = () => {
   const { retailerId } = useParams();
   const navigate = useNavigate();
-  const { loading: authLoading } = useOptionalAuth();
+  const { loading: authLoading } = useRequireAuth("customer");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
 

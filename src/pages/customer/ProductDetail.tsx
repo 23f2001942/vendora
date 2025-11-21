@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useOptionalAuth } from "@/hooks/useOptionalAuth";
+import { useRequireAuth } from "@/hooks/useRequireAuth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { StockBadge } from "@/components/shared/StockBadge";
@@ -14,7 +14,7 @@ import { AddToCartButton } from "@/components/customer/AddToCartButton";
 const ProductDetail = () => {
   const { productId } = useParams();
   const navigate = useNavigate();
-  const { loading: authLoading } = useOptionalAuth();
+  const { loading: authLoading } = useRequireAuth("customer");
 
   const { data: product, isLoading } = useQuery({
     queryKey: ["retailer-product", productId],

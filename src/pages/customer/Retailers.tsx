@@ -1,4 +1,4 @@
-import { useOptionalAuth } from "@/hooks/useOptionalAuth";
+import { useRequireAuth } from "@/hooks/useRequireAuth";
 import { useRetailers } from "@/hooks/useRetailers";
 import { RetailerCard } from "@/components/customer/RetailerCard";
 import { EmptyState } from "@/components/shared/EmptyState";
@@ -8,7 +8,7 @@ import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const Retailers = () => {
-  const { loading: authLoading } = useOptionalAuth();
+  const { loading: authLoading } = useRequireAuth("customer");
   const { data: retailers, isLoading } = useRetailers();
   const navigate = useNavigate();
 
