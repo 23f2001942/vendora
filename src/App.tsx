@@ -17,6 +17,7 @@ import CustomerProductDetail from "./pages/customer/ProductDetail";
 import CustomerProfile from "./pages/customer/Profile";
 import CustomerCart from "./pages/customer/Cart";
 import CustomerCheckout from "./pages/customer/Checkout";
+import CustomerOrderTracking from "./pages/customer/OrderTracking";
 
 import RetailerDashboard from "./pages/retailer/Dashboard";
 import RetailerProducts from "./pages/retailer/Products";
@@ -74,6 +75,7 @@ const App = () => {
             <Route path="/customer/profile" element={<CustomerProfile />} />
             <Route path="/customer/cart" element={<CustomerCart />} />
             <Route path="/customer/checkout" element={<CustomerCheckout />} />
+            <Route path="/customer/tracking/:orderId" element={<CustomerOrderTracking />} />
             
             {/* Retailer Routes */}
             <Route path="/retailer/dashboard" element={<RetailerDashboard />} />
