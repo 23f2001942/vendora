@@ -51,9 +51,17 @@ Deno.serve(async (req) => {
     // 1. Find orders that are confirmed but don't have delivery tracking yet
     const { data: ordersWithoutTracking, error: ordersError } = await supabase
       .from('orders')
-      .select('id, order_number, buyer_id, delivery_address, delivery_latitude, delivery_longitude')
+      .select(`
+        id, 
+        order_number, 
+        buyer_id, 
+        delivery_address, 
+        delivery_latitude, 
+        delivery_longitude,
+        delivery_tracking!left(id)
+      `)
       .eq('status', 'confirmed')
-      .is('delivery_tracking', null);
+      .is('delivery_tracking.id', null);
 
     if (ordersError) {
       console.error('Error fetching orders:', ordersError);
