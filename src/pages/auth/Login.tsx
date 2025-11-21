@@ -64,7 +64,7 @@ export default function Login() {
 
       if (error) throw error;
       toast.success('Logged in successfully!');
-      navigate('/');
+      // Stay on current page - redirect logic handled in Index.tsx
     } catch (error: any) {
       toast.error(error.message || 'Login failed');
     } finally {
@@ -119,7 +119,7 @@ export default function Login() {
 
       if (error) throw error;
       toast.success('Logged in successfully!');
-      navigate('/');
+      // Stay on current page - redirect logic handled in Index.tsx
     } catch (error: any) {
       toast.error(error.message || 'Invalid OTP');
     } finally {

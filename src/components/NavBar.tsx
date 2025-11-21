@@ -1,17 +1,24 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Moon, Sun, User, LogOut } from "lucide-react";
+import { Moon, Sun, User, LogOut, LayoutDashboard, Package } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { CartIcon } from "@/components/customer/CartIcon";
-import { useProfile } from "@/hooks/useProfile";
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuSeparator, 
+  DropdownMenuTrigger 
+} from "@/components/ui/dropdown-menu";
+import { LoginModal } from "@/components/auth/LoginModal";
 
 export const NavBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, signOut } = useAuth();
-  const { profile } = useProfile();
+  const { user, roles, signOut } = useAuth();
   const [theme, setTheme] = useState<"light" | "dark">("dark");
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   useEffect(() => {
     // Check for saved theme preference or default to dark
@@ -36,7 +43,27 @@ export const NavBar = () => {
 
   const handleSignOut = async () => {
     await signOut();
-    navigate("/auth/login");
+    navigate("/");
+  };
+
+  const handleNavigateToDashboard = () => {
+    if (roles.includes('customer')) {
+      navigate('/customer/dashboard');
+    } else if (roles.includes('retailer')) {
+      navigate('/retailer/dashboard');
+    } else if (roles.includes('wholesaler')) {
+      navigate('/wholesaler/dashboard');
+    }
+  };
+
+  const handleNavigateToProfile = () => {
+    if (roles.includes('customer')) {
+      navigate('/customer/profile');
+    } else if (roles.includes('retailer')) {
+      navigate('/retailer/profile');
+    } else if (roles.includes('wholesaler')) {
+      navigate('/wholesaler/profile');
+    }
   };
 
   const isAuthPage = location.pathname.startsWith("/auth");
@@ -65,21 +92,46 @@ export const NavBar = () => {
           </Button>
           {user ? (
             <div className="flex items-center gap-2">
-              {profile?.role === "customer" && <CartIcon />}
-              <Button variant="ghost" size="icon" onClick={() => {
-                if (profile?.role === "customer") navigate("/customer/profile");
-                else if (profile?.role === "retailer") navigate("/retailer/profile");
-                else if (profile?.role === "wholesaler") navigate("/wholesaler/profile");
-              }}>
-                <User className="h-5 w-5" />
+              {/* Dashboard Button */}
+              <Button variant="outline" onClick={handleNavigateToDashboard}>
+                <LayoutDashboard className="h-4 w-4 mr-2" />
+                <span className="hidden sm:inline">Dashboard</span>
               </Button>
-              <Button variant="ghost" onClick={handleSignOut}>
-                <LogOut className="h-5 w-5 mr-2" />
-                Sign Out
-              </Button>
+
+              {/* Cart Icon - Only for customers */}
+              {roles.includes('customer') && <CartIcon />}
+
+              {/* Profile Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <User className="h-5 w-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={handleNavigateToProfile}>
+                    <User className="h-4 w-4 mr-2" />
+                    View Profile
+                  </DropdownMenuItem>
+                  {roles.includes('customer') && (
+                    <DropdownMenuItem onClick={() => navigate('/customer/dashboard')}>
+                      <Package className="h-4 w-4 mr-2" />
+                      My Orders
+                    </DropdownMenuItem>
+                  )}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleSignOut}>
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           ) : (
             <>
+              {/* Guest Cart Icon */}
+              <CartIcon />
+              
               {isAuthPage ? (
                 <>
                   {location.pathname === "/auth/login" ? (

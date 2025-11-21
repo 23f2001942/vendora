@@ -2,6 +2,8 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { Database } from '@/integrations/supabase/types';
+import { GuestCartItem } from '@/hooks/useGuestCart';
+import { toast } from 'sonner';
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
 type UserRole = 'customer' | 'retailer' | 'wholesaler';
@@ -53,6 +55,41 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const mergeGuestCart = async (guestItems: GuestCartItem[], userId: string) => {
+    if (guestItems.length === 0) return;
+
+    try {
+      for (const guestItem of guestItems) {
+        const { data: existing } = await supabase
+          .from('cart_items')
+          .select('*')
+          .eq('user_id', userId)
+          .eq('product_id', guestItem.productId)
+          .eq('seller_id', guestItem.sellerId)
+          .single();
+
+        if (existing) {
+          await supabase
+            .from('cart_items')
+            .update({ quantity: existing.quantity + guestItem.quantity })
+            .eq('id', existing.id);
+        } else {
+          await supabase.from('cart_items').insert({
+            user_id: userId,
+            product_id: guestItem.productId,
+            seller_id: guestItem.sellerId,
+            quantity: guestItem.quantity,
+          });
+        }
+      }
+
+      localStorage.removeItem('guest_cart');
+      toast.success('Cart items merged successfully!');
+    } catch (error) {
+      console.error('Error merging guest cart:', error);
+    }
+  };
+
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
@@ -63,6 +100,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setTimeout(() => {
             fetchProfile(session.user.id);
             fetchRoles(session.user.id);
+            
+            // Merge guest cart on login
+            const guestCartStr = localStorage.getItem('guest_cart');
+            if (guestCartStr) {
+              try {
+                const guestCart: GuestCartItem[] = JSON.parse(guestCartStr);
+                mergeGuestCart(guestCart, session.user.id);
+              } catch (e) {
+                console.error('Error parsing guest cart:', e);
+              }
+            }
           }, 0);
         } else {
           setProfile(null);
