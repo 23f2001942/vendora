@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "@/hooks/useCart";
 import { useCheckout } from "@/hooks/useCheckout";
+import { useAddresses } from "@/hooks/useAddresses";
 import { AddressStep } from "@/components/customer/checkout/AddressStep";
 import { PaymentMethodStep } from "@/components/customer/checkout/PaymentMethodStep";
 import { OrderReviewStep } from "@/components/customer/checkout/OrderReviewStep";
@@ -11,6 +12,7 @@ import { Card } from "@/components/ui/card";
 const Checkout = () => {
   const navigate = useNavigate();
   const { cartItems, isLoading } = useCart();
+  const { defaultAddress } = useAddresses();
   const {
     currentStep,
     checkoutData,
@@ -26,6 +28,13 @@ const Checkout = () => {
       navigate("/customer/cart");
     }
   }, [cartItems, isLoading, navigate]);
+
+  // Auto-select default address when checkout loads
+  useEffect(() => {
+    if (defaultAddress && !checkoutData.address) {
+      updateCheckoutData({ address: defaultAddress });
+    }
+  }, [defaultAddress, checkoutData.address, updateCheckoutData]);
 
   if (isLoading) {
     return (

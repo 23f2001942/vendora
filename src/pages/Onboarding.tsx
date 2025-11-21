@@ -109,6 +109,26 @@ export default function Onboarding() {
 
       if (profileError) throw profileError;
 
+      // For customers, create their default address in customer_addresses table
+      if (role === 'customer') {
+        const { error: addressError } = await supabase
+          .from('customer_addresses')
+          .insert({
+            user_id: user.id,
+            label: 'Home',
+            address_line1: location.address,
+            city: location.city,
+            state: location.state,
+            postal_code: location.postalCode,
+            country: location.country || 'India',
+            latitude: location.latitude,
+            longitude: location.longitude,
+            is_default: true
+          });
+
+        if (addressError) throw addressError;
+      }
+
       const { error: roleError } = await supabase.from('user_roles').insert({
         user_id: user.id,
         role
