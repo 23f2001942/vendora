@@ -19,7 +19,7 @@ export const MiniCart = ({ onClose }: MiniCartProps) => {
   };
 
   const subtotal = cartItems?.reduce((sum, item: any) => {
-    return sum + (item.retailer_products?.price * item.quantity);
+    return sum + (item.price * item.quantity);
   }, 0) || 0;
 
   if (!cartItems || cartItems.length === 0) {
@@ -44,8 +44,8 @@ export const MiniCart = ({ onClose }: MiniCartProps) => {
       <ScrollArea className="h-[300px]">
         <div className="p-4 space-y-3">
           {cartItems.slice(0, 5).map((item: any) => {
-            const product = item.retailer_products?.products;
-            const price = item.retailer_products?.price;
+            const product = item.products;
+            const price = item.price;
 
             return (
               <div key={item.id} className="flex gap-3 items-start">
