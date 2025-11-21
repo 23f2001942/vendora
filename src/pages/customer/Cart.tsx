@@ -14,8 +14,7 @@ const Cart = () => {
   const navigate = useNavigate();
 
   const handleCheckout = () => {
-    // TODO: Implement checkout flow in Module 4
-    console.log("Proceed to checkout");
+    navigate("/customer/checkout");
   };
 
   if (authLoading || isLoading) {
