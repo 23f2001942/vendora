@@ -6,6 +6,11 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { NavBar } from "@/components/NavBar";
 import { Button } from "@/components/ui/button";
+import { useOrderAnalytics } from "@/hooks/useOrderAnalytics";
+import { useDeliveryAnalytics } from "@/hooks/useDeliveryAnalytics";
+import { OrderStatsChart } from "@/components/analytics/OrderStatsChart";
+import { RevenueChart } from "@/components/analytics/RevenueChart";
+import { DeliveryPerformanceChart } from "@/components/analytics/DeliveryPerformanceChart";
 
 const WholesalerDashboard = () => {
   const { user, loading } = useRequireAuth('wholesaler');
@@ -38,7 +43,17 @@ const WholesalerDashboard = () => {
     enabled: !!wholesaler,
   });
 
-  if (loading) {
+  const { stats, monthlyData, isLoading: analyticsLoading } = useOrderAnalytics(
+    user?.id || "",
+    "wholesaler"
+  );
+
+  const { data: deliveryStats, isLoading: deliveryLoading } = useDeliveryAnalytics(
+    user?.id || "",
+    "wholesaler"
+  );
+
+  if (loading || analyticsLoading || deliveryLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <p>Loading...</p>
@@ -73,37 +88,49 @@ const WholesalerDashboard = () => {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Bulk Orders</CardTitle>
+              <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
               <Truck className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">0</div>
-              <p className="text-xs text-muted-foreground">Pending fulfillment</p>
+              <div className="text-2xl font-bold">{stats?.total || 0}</div>
+              <p className="text-xs text-muted-foreground">All time</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Revenue</CardTitle>
-              <TrendingUp className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium">Pending Orders</CardTitle>
+              <Truck className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">₹0</div>
-              <p className="text-xs text-muted-foreground">This month</p>
+              <div className="text-2xl font-bold">{stats?.pending || 0}</div>
+              <p className="text-xs text-muted-foreground">Awaiting processing</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Retail Partners</CardTitle>
-              <Users className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium">Delivered</CardTitle>
+              <Package className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">0</div>
-              <p className="text-xs text-muted-foreground">Active retailers</p>
+              <div className="text-2xl font-bold">{stats?.delivered || 0}</div>
+              <p className="text-xs text-muted-foreground">Successfully delivered</p>
             </CardContent>
           </Card>
         </div>
+
+        {/* Analytics Charts */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          {stats && <OrderStatsChart stats={stats} />}
+          {monthlyData && <RevenueChart data={monthlyData} />}
+        </div>
+
+        {deliveryStats && (
+          <div className="mb-8">
+            <DeliveryPerformanceChart stats={deliveryStats} />
+          </div>
+        )}
 
         <Card>
           <CardHeader>
