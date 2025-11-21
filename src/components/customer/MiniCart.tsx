@@ -35,8 +35,8 @@ export const MiniCart = ({ onClose }: MiniCartProps) => {
   }
 
   return (
-    <div className="w-80">
-      <div className="p-4 border-b">
+    <div className="w-full">
+      <div className="p-4 border-b border-border">
         <h3 className="font-semibold text-foreground">Shopping Cart</h3>
         <p className="text-xs text-muted-foreground">{cartItems.length} {cartItems.length === 1 ? 'item' : 'items'}</p>
       </div>
@@ -48,17 +48,17 @@ export const MiniCart = ({ onClose }: MiniCartProps) => {
             const price = item.price;
 
             return (
-              <div key={item.id} className="flex gap-3 items-start">
+              <div key={item.id} className="flex gap-3 items-start pb-3 border-b border-border last:border-0">
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-foreground truncate">{product?.name}</p>
-                  <p className="text-xs text-muted-foreground">Qty: {item.quantity}</p>
-                  <PriceDisplay price={price * item.quantity} className="text-sm" />
+                  <p className="text-xs text-muted-foreground mt-1">Qty: {item.quantity}</p>
+                  <PriceDisplay price={price * item.quantity} className="text-sm mt-1" />
                 </div>
                 <Button
                   variant="ghost"
                   size="icon"
                   onClick={() => removeFromCart.mutate(item.id)}
-                  className="h-8 w-8"
+                  className="h-8 w-8 flex-shrink-0"
                 >
                   <Trash2 className="h-3 w-3 text-destructive" />
                 </Button>
@@ -73,7 +73,7 @@ export const MiniCart = ({ onClose }: MiniCartProps) => {
         </div>
       </ScrollArea>
 
-      <div className="p-4 border-t space-y-3">
+      <div className="p-4 border-t border-border space-y-3 bg-background">
         <div className="flex justify-between items-center">
           <span className="font-semibold text-foreground">Subtotal:</span>
           <PriceDisplay price={subtotal} className="text-lg font-bold" />

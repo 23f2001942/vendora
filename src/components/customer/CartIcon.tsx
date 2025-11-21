@@ -34,7 +34,7 @@ export const CartIcon = () => {
         </Button>
       </PopoverTrigger>
       <PopoverContent 
-        className="p-0 bg-card border-border shadow-lg" 
+        className="w-[380px] p-0 bg-card border-border shadow-lg" 
         align="end"
         sideOffset={8}
       >
