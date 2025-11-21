@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { CartIcon } from "@/components/customer/CartIcon";
 import { useProfile } from "@/hooks/useProfile";
+import { NotificationBell } from "@/components/NotificationBell";
 
 export const NavBar = () => {
   const navigate = useNavigate();
@@ -66,6 +67,7 @@ export const NavBar = () => {
           {user ? (
             <div className="flex items-center gap-2">
               {profile?.role === "customer" && <CartIcon />}
+              <NotificationBell />
               <Button variant="ghost" size="icon" onClick={() => {
                 if (profile?.role === "customer") navigate("/customer/profile");
                 else if (profile?.role === "retailer") navigate("/retailer/profile");
