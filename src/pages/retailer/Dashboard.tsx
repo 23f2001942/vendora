@@ -72,6 +72,7 @@ const RetailerDashboard = () => {
           <p className="text-muted-foreground">Manage your store, inventory, and orders.</p>
         </div>
 
+        {/* Stats Cards */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -120,6 +121,28 @@ const RetailerDashboard = () => {
           </Card>
         </div>
 
+        {/* Quick Actions */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle>Quick Actions</CardTitle>
+            <CardDescription>Manage your store and inventory</CardDescription>
+          </CardHeader>
+          <CardContent className="grid md:grid-cols-4 gap-4">
+            <Button className="h-20" variant="outline" onClick={() => navigate('/retailer/products')}>
+              Manage Products
+            </Button>
+            <Button className="h-20" variant="outline" onClick={() => navigate('/retailer/order-management')}>
+              Order Management
+            </Button>
+            <Button className="h-20" variant="outline" onClick={() => navigate('/retailer/orders')}>
+              View Orders
+            </Button>
+            <Button className="h-20" variant="outline" onClick={() => navigate('/retailer/wholesalers')}>
+              Browse Wholesalers
+            </Button>
+          </CardContent>
+        </Card>
+
         {/* Analytics Charts */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           {stats && <OrderStatsChart stats={stats} />}
@@ -131,24 +154,6 @@ const RetailerDashboard = () => {
             <DeliveryPerformanceChart stats={deliveryStats} />
           </div>
         )}
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
-            <CardDescription>Manage your store and inventory</CardDescription>
-          </CardHeader>
-          <CardContent className="grid md:grid-cols-3 gap-4">
-            <Button className="h-20" variant="outline" onClick={() => navigate('/retailer/products')}>
-              Manage Products
-            </Button>
-            <Button className="h-20" variant="outline" onClick={() => console.log('View Orders')}>
-              View Orders
-            </Button>
-            <Button className="h-20" variant="outline" onClick={() => navigate('/retailer/wholesalers')}>
-              Browse Wholesalers
-            </Button>
-          </CardContent>
-        </Card>
       </main>
     </div>
   );
