@@ -11,6 +11,7 @@ import Login from "./pages/auth/Login";
 import ResetPassword from "./pages/auth/ResetPassword";
 import Onboarding from "./pages/Onboarding";
 import CustomerDashboard from "./pages/customer/Dashboard";
+import CustomerOrders from "./pages/customer/Orders";
 import CustomerRetailers from "./pages/customer/Retailers";
 import CustomerRetailerProducts from "./pages/customer/RetailerProducts";
 import CustomerProductDetail from "./pages/customer/ProductDetail";
@@ -72,6 +73,7 @@ const App = () => {
             
             {/* Customer Routes */}
             <Route path="/customer/dashboard" element={<CustomerDashboard />} />
+            <Route path="/customer/orders" element={<CustomerOrders />} />
             <Route path="/customer/retailers" element={<CustomerRetailers />} />
             <Route path="/customer/retailer/:retailerId/products" element={<CustomerRetailerProducts />} />
             <Route path="/customer/product/:productId" element={<CustomerProductDetail />} />

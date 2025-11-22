@@ -1,6 +1,6 @@
 import { useRequireAuth } from "@/hooks/useRequireAuth";
-import { useOrders } from "@/hooks/useDeliveryTracking";
-import { OrderCard } from "@/components/customer/OrderCard";
+import { useRecentPurchasedProducts } from "@/hooks/useRecentPurchasedProducts";
+import { PurchasedProductCard } from "@/components/customer/PurchasedProductCard";
 import { Loader2, Package, ShoppingBag, ShoppingCart, ListOrdered } from "lucide-react";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { NavBar } from "@/components/NavBar";
@@ -13,7 +13,7 @@ const CustomerDashboard = () => {
   useRequireAuth("customer");
   const navigate = useNavigate();
   const { profile } = useAuth();
-  const { orders, isLoading } = useOrders();
+  const { data: purchasedProducts, isLoading } = useRecentPurchasedProducts();
 
   if (isLoading) {
     return (
@@ -64,7 +64,7 @@ const CustomerDashboard = () => {
               <Button
                 variant="outline"
                 className="h-24 flex flex-col items-center justify-center gap-2"
-                onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}
+                onClick={() => navigate("/customer/orders")}
               >
                 <ListOrdered className="h-6 w-6" />
                 <span className="font-medium">View All Orders</span>
@@ -73,19 +73,33 @@ const CustomerDashboard = () => {
           </CardContent>
         </Card>
 
-        {/* Recent Orders Section */}
-        <h2 className="text-2xl font-bold mb-4">Recent Orders</h2>
+        {/* Recent Purchased Products Section */}
+        <h2 className="text-2xl font-bold mb-4">Recent Purchased Products</h2>
 
-        {!orders || orders.length === 0 ? (
+        {!purchasedProducts || purchasedProducts.length === 0 ? (
           <EmptyState
             icon={Package}
-            title="No orders yet"
-            description="Start shopping to see your orders here"
+            title="No products purchased yet"
+            description="Start shopping to see your purchased products here"
           />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {orders.slice(0, 6).map((order) => (
-              <OrderCard key={order.id} order={order} />
+            {purchasedProducts.map((item: any) => (
+              <PurchasedProductCard
+                key={item.id}
+                orderItemId={item.id}
+                productId={item.products.id}
+                productName={item.products.name}
+                productImage={item.products.image_url}
+                productCategory={item.products.category}
+                quantity={item.quantity}
+                unitPrice={item.unit_price}
+                orderId={item.orders.id}
+                orderNumber={item.orders.order_number}
+                orderDate={item.orders.created_at}
+                sellerId={item.orders.seller_id}
+                feedback={item.feedback?.[0] || null}
+              />
             ))}
           </div>
         )}
