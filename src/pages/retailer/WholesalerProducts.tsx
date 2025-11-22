@@ -75,13 +75,16 @@ const WholesalerProducts = () => {
   });
 
   const createOrderMutation = useMutation({
-    mutationFn: async (data: { productId: string; price: number; stockQty: number; wholesalePrice: number }) => {
+    mutationFn: async (data: { productId: string; price: number; stockQty: number; wholesalePrice: number; minOrderQty: number }) => {
       // Validation
       if (data.price <= data.wholesalePrice) {
         throw new Error("Retail price must be higher than wholesale price");
       }
-      if (data.stockQty < 1 || data.stockQty > selectedProduct?.stock_quantity) {
-        throw new Error(`Stock quantity must be between 1 and ${selectedProduct?.stock_quantity}`);
+      if (data.stockQty < data.minOrderQty) {
+        throw new Error(`Minimum order quantity is ${data.minOrderQty} units`);
+      }
+      if (data.stockQty > selectedProduct?.stock_quantity) {
+        throw new Error(`Maximum available quantity is ${selectedProduct?.stock_quantity}`);
       }
 
       // Create B2B order
@@ -152,6 +155,7 @@ const WholesalerProducts = () => {
     const price = parseFloat(retailPrice);
     const qty = parseInt(stockQty);
     const wholesalePrice = selectedProduct.price;
+    const minOrderQty = selectedProduct.minimum_order_quantity;
 
     if (isNaN(price) || isNaN(qty)) {
       toast.error("Please enter valid numbers");
@@ -163,8 +167,8 @@ const WholesalerProducts = () => {
       return;
     }
 
-    if (qty < 1) {
-      toast.error("Quantity must be at least 1");
+    if (qty < minOrderQty) {
+      toast.error(`Minimum order quantity is ${minOrderQty} units`);
       return;
     }
 
@@ -178,6 +182,7 @@ const WholesalerProducts = () => {
       price,
       stockQty: qty,
       wholesalePrice,
+      minOrderQty,
     });
   };
 
@@ -254,20 +259,23 @@ const WholesalerProducts = () => {
                           <p className="text-sm text-muted-foreground">
                             Available Stock: {selectedProduct?.stock_quantity} units
                           </p>
+                          <p className="text-sm font-medium text-primary">
+                            Minimum Order: {selectedProduct?.minimum_order_quantity} units
+                          </p>
                         </div>
                         <div>
                           <Label htmlFor="stock-qty">Request Quantity *</Label>
                           <Input
                             id="stock-qty"
                             type="number"
-                            min="1"
+                            min={selectedProduct?.minimum_order_quantity}
                             max={selectedProduct?.stock_quantity}
                             value={stockQty}
                             onChange={(e) => setStockQty(e.target.value)}
-                            placeholder="Enter quantity"
+                            placeholder={`Min ${selectedProduct?.minimum_order_quantity} units`}
                           />
                           <p className="text-xs text-muted-foreground mt-1">
-                            Min: 1, Max: {selectedProduct?.stock_quantity}
+                            Min: {selectedProduct?.minimum_order_quantity}, Max: {selectedProduct?.stock_quantity}
                           </p>
                         </div>
                         <div>
