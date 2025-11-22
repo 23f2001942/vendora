@@ -182,9 +182,16 @@ export const useCheckout = () => {
         if (itemsError) throw itemsError;
 
         // Process payment for this order
-        await processPayment(order.id, sellerTotal, checkoutData.paymentMethod);
+        try {
+          await processPayment(order.id, sellerTotal, checkoutData.paymentMethod);
+        } catch (paymentError) {
+          // If payment fails, delete the order and items
+          await supabase.from("order_items").delete().eq("order_id", order.id);
+          await supabase.from("orders").delete().eq("id", order.id);
+          throw paymentError;
+        }
 
-        // Create notification
+        // Create notification only after successful payment
         await supabase.from("notifications").insert({
           user_id: user.id,
           type: "order_placed",
