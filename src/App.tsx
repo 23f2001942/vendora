@@ -32,6 +32,8 @@ import RetailerProfile from "./pages/retailer/Profile";
 
 import WholesalerDashboard from "./pages/wholesaler/Dashboard";
 import WholesalerProducts from "./pages/wholesaler/Products";
+import WholesalerOrders from "./pages/wholesaler/Orders";
+import WholesalerOrderManagement from "./pages/wholesaler/OrderManagement";
 import WholesalerProfile from "./pages/wholesaler/Profile";
 import { useEffect } from "react";
 
@@ -97,6 +99,8 @@ const App = () => {
             {/* Wholesaler Routes */}
             <Route path="/wholesaler/dashboard" element={<WholesalerDashboard />} />
             <Route path="/wholesaler/products" element={<WholesalerProducts />} />
+            <Route path="/wholesaler/orders" element={<WholesalerOrders />} />
+            <Route path="/wholesaler/order-management/:orderId" element={<WholesalerOrderManagement />} />
             <Route path="/wholesaler/profile" element={<WholesalerProfile />} />
             
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

@@ -141,7 +141,7 @@ const WholesalerDashboard = () => {
             <Button className="h-20" variant="outline" onClick={() => navigate('/wholesaler/products')}>
               Manage Products
             </Button>
-            <Button className="h-20" variant="outline" onClick={() => console.log('View Orders')}>
+            <Button className="h-20" variant="outline" onClick={() => navigate('/wholesaler/orders')}>
               View Orders
             </Button>
             <Button className="h-20" variant="outline" onClick={() => navigate('/wholesaler/profile')}>
