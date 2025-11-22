@@ -440,7 +440,7 @@ export type Database = {
           delivery_longitude?: number | null
           id?: string
           notes?: string | null
-          order_number: string
+          order_number?: string
           order_type: Database["public"]["Enums"]["order_type"]
           seller_id: string
           status?: Database["public"]["Enums"]["order_status"]
@@ -887,6 +887,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      generate_order_number: { Args: never; Returns: string }
       generate_tracking_number: { Args: never; Returns: string }
       generate_transaction_id: { Args: never; Returns: string }
       has_role: {
