@@ -135,7 +135,12 @@ export const useOrders = () => {
         .select(`
           *,
           seller:profiles!orders_seller_id_fkey(full_name),
-          delivery_tracking(tracking_number, current_status)
+          delivery_tracking(id, tracking_number, current_status),
+          order_items(
+            id,
+            quantity,
+            products(name, image_url)
+          )
         `)
         .eq("buyer_id", user.id)
         .order("created_at", { ascending: false });
