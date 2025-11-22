@@ -97,11 +97,10 @@ The COVID-19 pandemic fundamentally transformed consumer buying behavior and ret
 ```
 smartmartx/
 ├── docs/                    # Comprehensive documentation
-│   ├── README.md           # This file - project overview
 │   ├── TECH_STACK.md       # Technology stack details
 │   ├── DATABASE_SCHEMA.md  # Database design and relationships
 │   ├── API_REFERENCE.md    # Edge functions and API documentation
-│   └── DEPLOYMENT.md       # Deployment and setup guide
+│   └── USER_GUIDE.md       # Step-by-step user guide
 ├── src/
 │   ├── components/         # React components
 │   ├── pages/             # Page components
@@ -115,8 +114,6 @@ smartmartx/
 ```
 
 ## Quick Start
-
-See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed setup instructions.
 
 ```bash
 # Clone the repository
@@ -134,14 +131,14 @@ npm run dev
 
 ## Documentation
 
-- **[Tech Stack](./TECH_STACK.md)**: Detailed information about technologies used
-- **[Database Schema](./DATABASE_SCHEMA.md)**: Complete database structure and relationships
-- **[API Reference](./API_REFERENCE.md)**: Edge functions and API documentation
-- **[Deployment Guide](./DEPLOYMENT.md)**: Setup and deployment instructions
+- **[Tech Stack](./docs/TECH_STACK.md)**: Detailed information about technologies used
+- **[Database Schema](./docs/DATABASE_SCHEMA.md)**: Complete database structure and relationships
+- **[API Reference](./docs/API_REFERENCE.md)**: Edge functions and API documentation
+- **[User Guide](./docs/USER_GUIDE.md)**: Step-by-step instructions for all user types
 
 ## Live Demo
 
-Visit the live application: [Your Deployment URL]
+Visit the live application: [smartmartx.vercel.app](https://smartmartx.vercel.app)
 
 ## License
 
