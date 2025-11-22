@@ -15,10 +15,6 @@ export const useB2BOrders = (userId: string, role: "retailer" | "wholesaler") =>
           ),
           profiles!orders_buyer_id_fkey (
             full_name
-          ),
-          retailers!inner (
-            business_name,
-            business_address
           )
         `)
         .eq("order_type", "retailer_to_wholesaler")
