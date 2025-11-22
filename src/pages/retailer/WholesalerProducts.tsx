@@ -115,13 +115,21 @@ const WholesalerProducts = () => {
       if (itemError) throw itemError;
 
       // Create notification for wholesaler
-      await supabase.from("notifications").insert({
+      console.log("Creating order placement notification for wholesaler:", wholesaler?.user_id);
+      const { error: notificationError } = await supabase.from("notifications").insert({
         user_id: wholesaler?.user_id,
         type: "order_placed",
         title: "New Product Request",
         message: `${retailer?.business_name} requested ${data.stockQty} units`,
         related_order_id: order.id,
       });
+
+      if (notificationError) {
+        console.error("Failed to create notification:", notificationError);
+        // Don't fail the order, just log the error
+      } else {
+        console.log("Notification created successfully for order:", order.id);
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["b2b-orders"] });

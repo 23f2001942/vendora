@@ -160,13 +160,21 @@ const WholesalerOrderManagement = () => {
       if (error) throw error;
 
       // Create notification for retailer
-      await supabase.from("notifications").insert({
+      console.log("Creating rejection notification for retailer:", order?.buyer_id);
+      const { error: notificationError } = await supabase.from("notifications").insert({
         user_id: order?.buyer_id,
         type: "order_cancelled",
         title: "Order Rejected",
         message: `Your product request #${order?.order_number} was rejected. Reason: ${rejectReason}`,
         related_order_id: orderId,
       });
+
+      if (notificationError) {
+        console.error("Failed to create rejection notification:", notificationError);
+        // Don't fail the rejection, just log the error
+      } else {
+        console.log("Rejection notification created successfully");
+      }
     },
     onSuccess: () => {
       toast.success("Order rejected");

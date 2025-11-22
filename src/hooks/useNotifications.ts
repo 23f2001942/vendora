@@ -40,15 +40,24 @@ export const useNotifications = () => {
 
   const markAsRead = useMutation({
     mutationFn: async (notificationId: string) => {
+      console.log("Marking notification as read:", notificationId);
       const { error } = await supabase
         .from("notifications")
         .update({ is_read: true })
         .eq("id", notificationId);
 
-      if (error) throw error;
+      if (error) {
+        console.error("Failed to mark notification as read:", error);
+        throw error;
+      }
+      console.log("Notification marked as read successfully");
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["notifications"] });
+    },
+    onError: (error: Error) => {
+      toast.error("Failed to update notification");
+      console.error("Mark as read error:", error);
     },
   });
 
@@ -57,17 +66,26 @@ export const useNotifications = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
+      console.log("Marking all notifications as read for user:", user.id);
       const { error } = await supabase
         .from("notifications")
         .update({ is_read: true })
         .eq("user_id", user.id)
         .eq("is_read", false);
 
-      if (error) throw error;
+      if (error) {
+        console.error("Failed to mark all as read:", error);
+        throw error;
+      }
+      console.log("All notifications marked as read successfully");
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["notifications"] });
       toast.success("All notifications marked as read");
+    },
+    onError: (error: Error) => {
+      toast.error("Failed to mark all as read");
+      console.error("Mark all as read error:", error);
     },
   });
 
