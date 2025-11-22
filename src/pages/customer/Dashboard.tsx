@@ -97,6 +97,7 @@ const CustomerDashboard = () => {
                 orderId={item.orders.id}
                 orderNumber={item.orders.order_number}
                 orderDate={item.orders.created_at}
+                orderStatus={item.orders.status}
                 sellerId={item.orders.seller_id}
                 feedback={item.feedback?.[0] || null}
               />

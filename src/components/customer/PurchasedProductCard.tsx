@@ -16,6 +16,7 @@ interface PurchasedProductCardProps {
   orderId: string;
   orderNumber: string;
   orderDate: string;
+  orderStatus: string;
   sellerId: string;
   feedback?: {
     id: string;
@@ -34,6 +35,7 @@ export const PurchasedProductCard = ({
   orderId,
   orderNumber,
   orderDate,
+  orderStatus,
   sellerId,
   feedback,
 }: PurchasedProductCardProps) => {
@@ -76,6 +78,7 @@ export const PurchasedProductCard = ({
           productName={productName}
           orderId={orderId}
           sellerId={sellerId}
+          orderStatus={orderStatus}
           existingFeedback={feedback}
         />
       </CardFooter>
