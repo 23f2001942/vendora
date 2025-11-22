@@ -16,14 +16,14 @@ const STATUS_PROGRESSION = [
   'delivered',
 ];
 
-// Time delays in minutes for each status transition
+// Time delays in minutes for each status transition (demo mode - faster)
 const STATUS_DELAYS = {
-  pending: 5,        // 5 min to confirmed
-  confirmed: 15,     // 15 min to packed
-  packed: 30,        // 30 min to picked_up
-  picked_up: 60,     // 1 hour to in_transit
-  in_transit: 180,   // 3 hours to out_for_delivery
-  out_for_delivery: 60, // 1 hour to delivered
+  pending: 0.5,        // 30 seconds to confirmed
+  confirmed: 1,        // 1 min to packed
+  packed: 1.5,         // 1.5 min to picked_up
+  picked_up: 2,        // 2 min to in_transit
+  in_transit: 3,       // 3 min to out_for_delivery
+  out_for_delivery: 2, // 2 min to delivered
 };
 
 interface DeliveryTracking {
