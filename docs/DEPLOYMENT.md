@@ -2,7 +2,7 @@
 
 ## Overview
 
-This guide covers the complete setup and deployment process for Live MART, from local development to production deployment.
+This guide covers the complete setup and deployment process for SmartMartX, from local development to production deployment.
 
 ## Prerequisites
 
