@@ -27,6 +27,7 @@ import RetailerOrders from "./pages/retailer/Orders";
 import RetailerOrderDetail from "./pages/retailer/OrderDetail";
 import RetailerWholesalers from "./pages/retailer/Wholesalers";
 import RetailerWholesalerProducts from "./pages/retailer/WholesalerProducts";
+import RetailerPendingProducts from "./pages/retailer/PendingProducts";
 import RetailerProfile from "./pages/retailer/Profile";
 
 import WholesalerDashboard from "./pages/wholesaler/Dashboard";
@@ -90,6 +91,7 @@ const App = () => {
             <Route path="/retailer/order/:orderId" element={<RetailerOrderDetail />} />
             <Route path="/retailer/wholesalers" element={<RetailerWholesalers />} />
             <Route path="/retailer/wholesaler/:wholesalerId/products" element={<RetailerWholesalerProducts />} />
+            <Route path="/retailer/pending-products" element={<RetailerPendingProducts />} />
             <Route path="/retailer/profile" element={<RetailerProfile />} />
             
             {/* Wholesaler Routes */}

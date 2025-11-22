@@ -127,9 +127,12 @@ const RetailerDashboard = () => {
             <CardTitle>Quick Actions</CardTitle>
             <CardDescription>Manage your store and inventory</CardDescription>
           </CardHeader>
-          <CardContent className="grid md:grid-cols-4 gap-4">
+          <CardContent className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
             <Button className="h-20" variant="outline" onClick={() => navigate('/retailer/products')}>
               Manage Products
+            </Button>
+            <Button className="h-20" variant="outline" onClick={() => navigate('/retailer/pending-products')}>
+              Pending Requests
             </Button>
             <Button className="h-20" variant="outline" onClick={() => navigate('/retailer/order-management')}>
               Order Management
