@@ -74,35 +74,102 @@ const WholesalerProducts = () => {
     },
   });
 
-  const addToStoreMutation = useMutation({
-    mutationFn: async (data: { productId: string; price: number; stockQty: number }) => {
-      const { error } = await supabase.from("retailer_products").insert({
-        retailer_id: retailer?.id,
-        product_id: data.productId,
-        price: data.price,
-        stock_quantity: data.stockQty,
-        is_available: true,
+  const createOrderMutation = useMutation({
+    mutationFn: async (data: { productId: string; price: number; stockQty: number; wholesalePrice: number }) => {
+      // Validation
+      if (data.price <= data.wholesalePrice) {
+        throw new Error("Retail price must be higher than wholesale price");
+      }
+      if (data.stockQty < 1 || data.stockQty > selectedProduct?.stock_quantity) {
+        throw new Error(`Stock quantity must be between 1 and ${selectedProduct?.stock_quantity}`);
+      }
+
+      // Create B2B order
+      const { data: order, error: orderError } = await supabase
+        .from("orders")
+        .insert({
+          buyer_id: user?.id,
+          seller_id: wholesaler?.user_id,
+          order_type: "retailer_to_wholesaler",
+          status: "pending",
+          total_amount: data.wholesalePrice * data.stockQty,
+          delivery_address: retailer?.business_address || "",
+          notes: `Desired retail price: ₹${data.price.toFixed(2)}`,
+        })
+        .select()
+        .single();
+
+      if (orderError) throw orderError;
+
+      // Create order item
+      const { error: itemError } = await supabase
+        .from("order_items")
+        .insert({
+          order_id: order.id,
+          product_id: data.productId,
+          quantity: data.stockQty,
+          unit_price: data.wholesalePrice,
+          subtotal: data.wholesalePrice * data.stockQty,
+        });
+
+      if (itemError) throw itemError;
+
+      // Create notification for wholesaler
+      await supabase.from("notifications").insert({
+        user_id: wholesaler?.user_id,
+        type: "order_placed",
+        title: "New Product Request",
+        message: `${retailer?.business_name} requested ${data.stockQty} units`,
+        related_order_id: order.id,
       });
-      if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["my-retailer-products"] });
-      toast.success("Product added to your store");
+      queryClient.invalidateQueries({ queryKey: ["b2b-orders"] });
+      toast.success("Product request sent to wholesaler for approval");
       setSelectedProduct(null);
       setRetailPrice("");
       setStockQty("");
     },
+    onError: (error: Error) => {
+      toast.error(error.message || "Failed to send product request");
+    },
   });
 
-  const handleAddToStore = () => {
+  const handleRequestProduct = () => {
     if (!retailPrice || !stockQty) {
       toast.error("Please fill all fields");
       return;
     }
-    addToStoreMutation.mutate({
+
+    const price = parseFloat(retailPrice);
+    const qty = parseInt(stockQty);
+    const wholesalePrice = selectedProduct.price;
+
+    if (isNaN(price) || isNaN(qty)) {
+      toast.error("Please enter valid numbers");
+      return;
+    }
+
+    if (price <= wholesalePrice) {
+      toast.error(`Retail price must be higher than wholesale price (₹${wholesalePrice})`);
+      return;
+    }
+
+    if (qty < 1) {
+      toast.error("Quantity must be at least 1");
+      return;
+    }
+
+    if (qty > selectedProduct.stock_quantity) {
+      toast.error(`Maximum available quantity is ${selectedProduct.stock_quantity}`);
+      return;
+    }
+
+    createOrderMutation.mutate({
       productId: selectedProduct.product_id,
-      price: parseFloat(retailPrice),
-      stockQty: parseInt(stockQty),
+      price,
+      stockQty: qty,
+      wholesalePrice,
     });
   };
 
@@ -128,7 +195,7 @@ const WholesalerProducts = () => {
           </Button>
           <div>
             <h1 className="text-3xl font-bold text-foreground">{wholesaler?.business_name}</h1>
-            <p className="text-muted-foreground">Browse and add products to your store</p>
+            <p className="text-muted-foreground">Request products from this wholesaler</p>
           </div>
         </div>
 
@@ -162,44 +229,75 @@ const WholesalerProducts = () => {
                         disabled={!product.is_available || product.stock_quantity === 0}
                       >
                         <Plus className="h-4 w-4 mr-2" />
-                        Add to My Store
+                        Request Product
                       </Button>
                     </DialogTrigger>
                     <DialogContent>
                       <DialogHeader>
-                        <DialogTitle>Add to Your Store</DialogTitle>
+                        <DialogTitle>Request Product from Wholesaler</DialogTitle>
                       </DialogHeader>
                       <div className="space-y-4">
-                        <div>
+                        <div className="p-4 bg-muted rounded-lg">
                           <Label>Product</Label>
                           <p className="font-medium">{selectedProduct?.products.name}</p>
                           <p className="text-sm text-muted-foreground">
-                            Wholesale Price: ₹{selectedProduct?.price}
+                            Wholesale Price: ₹{selectedProduct?.price} per unit
+                          </p>
+                          <p className="text-sm text-muted-foreground">
+                            Available Stock: {selectedProduct?.stock_quantity} units
                           </p>
                         </div>
                         <div>
-                          <Label htmlFor="retail-price">Your Retail Price (₹)</Label>
+                          <Label htmlFor="stock-qty">Request Quantity *</Label>
+                          <Input
+                            id="stock-qty"
+                            type="number"
+                            min="1"
+                            max={selectedProduct?.stock_quantity}
+                            value={stockQty}
+                            onChange={(e) => setStockQty(e.target.value)}
+                            placeholder="Enter quantity"
+                          />
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Min: 1, Max: {selectedProduct?.stock_quantity}
+                          </p>
+                        </div>
+                        <div>
+                          <Label htmlFor="retail-price">Your Retail Price (₹) *</Label>
                           <Input
                             id="retail-price"
                             type="number"
                             step="0.01"
+                            min={selectedProduct?.price}
                             value={retailPrice}
                             onChange={(e) => setRetailPrice(e.target.value)}
-                            placeholder={`Min: ${selectedProduct?.price}`}
+                            placeholder={`Must be higher than ₹${selectedProduct?.price}`}
                           />
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Set the price you'll sell to customers
+                          </p>
                         </div>
-                        <div>
-                          <Label htmlFor="stock-qty">Initial Stock Quantity</Label>
-                          <Input
-                            id="stock-qty"
-                            type="number"
-                            value={stockQty}
-                            onChange={(e) => setStockQty(e.target.value)}
-                          />
-                        </div>
-                        <Button onClick={handleAddToStore} className="w-full">
-                          Add Product
+                        {retailPrice && stockQty && (
+                          <div className="p-3 bg-primary/10 rounded-lg">
+                            <p className="text-sm font-medium">Order Summary:</p>
+                            <p className="text-sm text-muted-foreground">
+                              Total Cost: ₹{(selectedProduct?.price * parseInt(stockQty || "0")).toFixed(2)}
+                            </p>
+                            <p className="text-sm text-muted-foreground">
+                              Potential Profit: ₹{((parseFloat(retailPrice || "0") - selectedProduct?.price) * parseInt(stockQty || "0")).toFixed(2)}
+                            </p>
+                          </div>
+                        )}
+                        <Button 
+                          onClick={handleRequestProduct} 
+                          className="w-full"
+                          disabled={createOrderMutation.isPending}
+                        >
+                          {createOrderMutation.isPending ? "Sending Request..." : "Send Request to Wholesaler"}
                         </Button>
+                        <p className="text-xs text-center text-muted-foreground">
+                          The wholesaler will review and approve your request
+                        </p>
                       </div>
                     </DialogContent>
                   </Dialog>
