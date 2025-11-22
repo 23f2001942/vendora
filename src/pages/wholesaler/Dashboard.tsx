@@ -1,16 +1,14 @@
 import { useRequireAuth } from "@/hooks/useRequireAuth";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
-import { Package, Truck, TrendingUp, Users } from "lucide-react";
+import { Package, Clock, TrendingUp, ShoppingCart } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { NavBar } from "@/components/NavBar";
 import { Button } from "@/components/ui/button";
-import { useOrderAnalytics } from "@/hooks/useOrderAnalytics";
-import { useDeliveryAnalytics } from "@/hooks/useDeliveryAnalytics";
-import { OrderStatsChart } from "@/components/analytics/OrderStatsChart";
+import { useCategorySalesAnalytics } from "@/hooks/useCategorySalesAnalytics";
 import { RevenueChart } from "@/components/analytics/RevenueChart";
-import { DeliveryPerformanceChart } from "@/components/analytics/DeliveryPerformanceChart";
+import { CategorySalesChart } from "@/components/analytics/CategorySalesChart";
 
 const WholesalerDashboard = () => {
   const { user, loading } = useRequireAuth('wholesaler');
@@ -43,17 +41,72 @@ const WholesalerDashboard = () => {
     enabled: !!wholesaler,
   });
 
-  const { stats, monthlyData, isLoading: analyticsLoading } = useOrderAnalytics(
-    user?.id || "",
-    "wholesaler"
-  );
+  // Get B2B order statistics
+  const { data: b2bStats, isLoading: statsLoading } = useQuery({
+    queryKey: ["b2b-stats", user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("orders")
+        .select("status, total_amount")
+        .eq("seller_id", user?.id)
+        .eq("order_type", "retailer_to_wholesaler");
 
-  const { data: deliveryStats, isLoading: deliveryLoading } = useDeliveryAnalytics(
-    user?.id || "",
-    "wholesaler"
-  );
+      if (error) throw error;
 
-  if (loading || analyticsLoading || deliveryLoading) {
+      const stats = {
+        total: data.length,
+        pending: data.filter((o) => o.status === "pending").length,
+        confirmed: data.filter((o) => o.status === "confirmed").length,
+        revenue: data
+          .filter((o) => o.status === "confirmed")
+          .reduce((sum, o) => sum + Number(o.total_amount), 0),
+      };
+
+      return stats;
+    },
+    enabled: !!user,
+  });
+
+  // Get active retailers count
+  const { data: retailersCount } = useQuery({
+    queryKey: ["active-retailers", user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("orders")
+        .select("buyer_id")
+        .eq("seller_id", user?.id)
+        .eq("order_type", "retailer_to_wholesaler")
+        .eq("status", "confirmed");
+
+      if (error) throw error;
+
+      const uniqueRetailers = new Set(data.map((o) => o.buyer_id));
+      return uniqueRetailers.size;
+    },
+    enabled: !!user,
+  });
+
+  // Get products sold count
+  const { data: productsSold } = useQuery({
+    queryKey: ["products-sold", user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("order_items")
+        .select("quantity, orders!inner(seller_id, order_type, status)")
+        .eq("orders.seller_id", user?.id)
+        .eq("orders.order_type", "retailer_to_wholesaler")
+        .eq("orders.status", "confirmed");
+
+      if (error) throw error;
+
+      return data.reduce((sum, item) => sum + item.quantity, 0);
+    },
+    enabled: !!user,
+  });
+
+  const { data: categoryData, isLoading: categoryLoading } = useCategorySalesAnalytics(user?.id || "");
+
+  if (loading || statsLoading || categoryLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <p>Loading...</p>
@@ -75,62 +128,53 @@ const WholesalerDashboard = () => {
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Products</CardTitle>
+              <CardTitle className="text-sm font-medium">Products Sold</CardTitle>
+              <ShoppingCart className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{productsSold || 0}</div>
+              <p className="text-xs text-muted-foreground">Total units sold</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Active Retailers</CardTitle>
               <Package className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{productsCount || 0}</div>
-              <p className="text-xs text-muted-foreground">
-                {productsCount ? `${productsCount} products listed` : "No products listed"}
-              </p>
+              <div className="text-2xl font-bold">{retailersCount || 0}</div>
+              <p className="text-xs text-muted-foreground">Partners with orders</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
-              <Truck className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium">Pending Requests</CardTitle>
+              <Clock className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats?.total || 0}</div>
-              <p className="text-xs text-muted-foreground">All time</p>
+              <div className="text-2xl font-bold">{b2bStats?.pending || 0}</div>
+              <p className="text-xs text-muted-foreground">Awaiting approval</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Pending Orders</CardTitle>
-              <Truck className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium">Revenue</CardTitle>
+              <TrendingUp className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats?.pending || 0}</div>
-              <p className="text-xs text-muted-foreground">Awaiting processing</p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Delivered</CardTitle>
-              <Package className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats?.delivered || 0}</div>
-              <p className="text-xs text-muted-foreground">Successfully delivered</p>
+              <div className="text-2xl font-bold">₹{(b2bStats?.revenue || 0).toFixed(2)}</div>
+              <p className="text-xs text-muted-foreground">From confirmed orders</p>
             </CardContent>
           </Card>
         </div>
 
         {/* Analytics Charts */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          {stats && <OrderStatsChart stats={stats} />}
-          {monthlyData && <RevenueChart data={monthlyData} />}
+        <div className="mb-8">
+          {categoryData && <CategorySalesChart data={categoryData} />}
         </div>
-
-        {deliveryStats && (
-          <div className="mb-8">
-            <DeliveryPerformanceChart stats={deliveryStats} />
-          </div>
-        )}
 
         <Card>
           <CardHeader>
