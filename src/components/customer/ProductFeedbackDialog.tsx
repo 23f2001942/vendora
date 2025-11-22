@@ -20,6 +20,7 @@ interface ProductFeedbackDialogProps {
   productName: string;
   orderId: string;
   sellerId: string;
+  orderStatus: string;
   existingFeedback?: {
     id: string;
     rating: number;
@@ -32,6 +33,7 @@ export const ProductFeedbackDialog = ({
   productName,
   orderId,
   sellerId,
+  orderStatus,
   existingFeedback,
 }: ProductFeedbackDialogProps) => {
   const { user } = useAuth();
@@ -41,6 +43,7 @@ export const ProductFeedbackDialog = ({
   const [rating, setRating] = useState(existingFeedback?.rating || 0);
   const [comment, setComment] = useState(existingFeedback?.comment || "");
   const [hoveredStar, setHoveredStar] = useState(0);
+  const canGiveFeedback = orderStatus === "delivered";
 
   const submitFeedback = useMutation({
     mutationFn: async () => {
@@ -116,9 +119,14 @@ export const ProductFeedbackDialog = ({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="sm" className="gap-2">
+        <Button
+          size="sm"
+          className="gap-2"
+          disabled={!canGiveFeedback}
+          variant={canGiveFeedback ? "default" : "outline"}
+        >
           <MessageSquare className="h-4 w-4" />
-          Give Feedback
+          {canGiveFeedback ? "Give Feedback" : "Feedback after delivery"}
         </Button>
       </DialogTrigger>
       <DialogContent>

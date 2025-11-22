@@ -33,7 +33,7 @@ export const useRecentPurchasedProducts = () => {
           )
         `)
         .eq("orders.buyer_id", user.id)
-        .eq("orders.status", "delivered")
+        .neq("orders.status", "cancelled")
         .order("orders(created_at)", { ascending: false })
         .limit(6);
 
