@@ -15,6 +15,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { StockBadge } from "@/components/shared/StockBadge";
+import { LowStockWarning } from "@/components/shared/StockUpdateIndicator";
 import { PriceDisplay } from "@/components/shared/PriceDisplay";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
@@ -312,11 +313,22 @@ const Products = () => {
                   <Badge className="w-fit">{product.products.category}</Badge>
                 </CardHeader>
                 <CardContent>
-                  <div className="mb-4">
-                    <PriceDisplay price={product.price} className="text-xl text-primary" />
-                  </div>
-                  <StockBadge stockQuantity={product.stock_quantity} isAvailable={product.is_available} />
-                  <div className="mt-4 space-y-2">
+                  <div className="space-y-3">
+                    <div>
+                      <PriceDisplay price={product.price} className="text-xl text-primary" />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <StockBadge 
+                        stockQuantity={product.stock_quantity} 
+                        isAvailable={product.is_available}
+                        updatedAt={product.updated_at}
+                        showIcon
+                      />
+                      <LowStockWarning stockQuantity={product.stock_quantity} threshold={10} />
+                    </div>
+
+                    <div className="mt-4 space-y-2">
                     <Button 
                       variant="outline" 
                       className="w-full"
@@ -341,6 +353,7 @@ const Products = () => {
                     >
                       Remove
                     </Button>
+                  </div>
                   </div>
                 </CardContent>
               </Card>
