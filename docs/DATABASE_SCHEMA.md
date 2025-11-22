@@ -2,7 +2,7 @@
 
 ## Overview
 
-Live MART uses **PostgreSQL** (via Supabase) as the primary database. The schema is designed to support a three-tier marketplace connecting customers, retailers, and wholesalers with comprehensive order management, inventory tracking, and real-time delivery updates.
+SmartMartX uses **PostgreSQL** (via Supabase) as the primary database. The schema is designed to support a three-tier marketplace connecting customers, retailers, and wholesalers with comprehensive order management, inventory tracking, and real-time delivery updates.
 
 ## Schema Diagram
 

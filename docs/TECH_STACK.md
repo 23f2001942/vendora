@@ -2,7 +2,7 @@
 
 ## Overview
 
-Live MART is built using modern web technologies, emphasizing performance, scalability, and developer experience. This document details all technologies, libraries, and tools used in the project.
+SmartMartX is built using modern web technologies, emphasizing performance, scalability, and developer experience. This document details all technologies, libraries, and tools used in the project.
 
 ## Frontend Technologies
 

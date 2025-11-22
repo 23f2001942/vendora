@@ -2,7 +2,7 @@
 
 ## Overview
 
-Live MART uses a combination of Supabase's auto-generated REST API and custom Edge Functions for backend functionality. This document covers both types of APIs.
+SmartMartX uses a combination of Supabase's auto-generated REST API and custom Edge Functions for backend functionality. This document covers both types of APIs.
 
 ## Base URLs
 
