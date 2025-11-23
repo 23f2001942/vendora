@@ -21,7 +21,7 @@ export const useCategorySalesAnalytics = (userId: string) => {
         `)
         .eq("orders.seller_id", userId)
         .eq("orders.order_type", "retailer_to_wholesaler")
-        .eq("orders.status", "confirmed");
+        .in("orders.status", ["confirmed", "processing", "shipped", "delivered"]);
 
       if (error) throw error;
 
