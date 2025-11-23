@@ -58,7 +58,7 @@ const WholesalerDashboard = () => {
         pending: data.filter((o) => o.status === "pending").length,
         confirmed: data.filter((o) => o.status === "confirmed").length,
         revenue: data
-          .filter((o) => o.status === "confirmed")
+          .filter((o) => ["confirmed", "processing", "shipped", "delivered"].includes(o.status))
           .reduce((sum, o) => sum + Number(o.total_amount), 0),
       };
 
@@ -76,7 +76,7 @@ const WholesalerDashboard = () => {
         .select("buyer_id")
         .eq("seller_id", user?.id)
         .eq("order_type", "retailer_to_wholesaler")
-        .eq("status", "confirmed");
+        .in("status", ["confirmed", "processing", "shipped", "delivered"]);
 
       if (error) throw error;
 
@@ -95,7 +95,7 @@ const WholesalerDashboard = () => {
         .select("quantity, orders!inner(seller_id, order_type, status)")
         .eq("orders.seller_id", user?.id)
         .eq("orders.order_type", "retailer_to_wholesaler")
-        .eq("orders.status", "confirmed");
+        .in("orders.status", ["confirmed", "processing", "shipped", "delivered"]);
 
       if (error) throw error;
 
