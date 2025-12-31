@@ -28,7 +28,7 @@ export default function ResetPassword() {
     try {
       const redirectUrl = window.location.hostname === 'localhost' 
         ? `${window.location.origin}/auth/reset-password`
-        : 'https://smartmartx.vercel.app/auth/reset-password';
+        : `${window.location.origin}/auth/reset-password`;
       
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: redirectUrl

@@ -83,7 +83,7 @@ export default function Login() {
       // Use production URL for deployed site, or current origin for development
       const redirectUrl = window.location.hostname === 'localhost' 
         ? `${window.location.origin}/`
-        : 'https://smartmartx.vercel.app/';
+        : `${window.location.origin}/`;
       
       const { error } = await supabase.auth.signInWithOtp({
         email,
@@ -134,7 +134,7 @@ export default function Login() {
         <Card className="w-full max-w-md">
           <CardHeader>
             <CardTitle>Welcome Back</CardTitle>
-            <CardDescription>Sign in to your SmartMartX account</CardDescription>
+            <CardDescription>Sign in to your Vendora account</CardDescription>
           </CardHeader>
         <CardContent>
           {!emailChecked ? (

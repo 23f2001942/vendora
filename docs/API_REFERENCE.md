@@ -2,7 +2,7 @@
 
 ## Overview
 
-SmartMartX uses a combination of Supabase's auto-generated REST API and custom Edge Functions for backend functionality. This document covers both types of APIs.
+Vendora uses a combination of Supabase's auto-generated REST API and custom Edge Functions for backend functionality. This document covers both types of APIs.
 
 ## Base URLs
 

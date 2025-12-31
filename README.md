@@ -1,21 +1,8 @@
-# SmartMartX - Online Delivery System
+# Vendora - Online Delivery System
 
 ## Project Overview
 
-SmartMartX is a comprehensive web-based e-commerce platform that connects **Customers**, **Retailers**, and **Wholesalers** in a seamless supply chain ecosystem. Built as part of CS F213/MAC F212 OOP course (Semester-I, 2025-2026), this platform addresses the modern retail challenges accelerated by the COVID-19 pandemic.
-
-### Project Context
-
-The COVID-19 pandemic fundamentally transformed consumer buying behavior and retail operations. Modern consumers expect more than just an online shopping option—they demand personalized experiences, advanced search capabilities, seamless transactions, and support for local businesses. SmartMartX addresses these needs by creating a three-tier marketplace that streamlines the supply chain while enhancing user experience.
-
-## Team Members
-
-| Name | Role | Responsibilities |
-|------|------|-----------------|
-| **Srirangam Pranav** | Customer End Developer | Customer dashboard, product browsing, cart, checkout, order tracking |
-| **Mohammed Faiz** | Retailer End Developer | Retailer dashboard, inventory management, B2B orders, analytics |
-| **Kasaraneni Ishan** | Wholesaler End Developer | Wholesaler dashboard, product management, B2B order fulfillment |
-| **Sana Nitchel Kumar** | Testing & QA | Quality assurance, testing, bug tracking, user acceptance |
+Vendora is a comprehensive web-based e-commerce platform that connects **Customers**, **Retailers**, and **Wholesalers** in a seamless supply chain ecosystem. This platform addresses the modern retail challenges by creating a three-tier marketplace that streamlines the supply chain while enhancing user experience.
 
 ## Key Features
 
@@ -95,7 +82,7 @@ The COVID-19 pandemic fundamentally transformed consumer buying behavior and ret
 ## Project Structure
 
 ```
-smartmartx/
+vendora/
 ├── docs/                    # Comprehensive documentation
 │   ├── TECH_STACK.md       # Technology stack details
 │   ├── DATABASE_SCHEMA.md  # Database design and relationships
@@ -136,14 +123,6 @@ npm run dev
 - **[API Reference](./docs/API_REFERENCE.md)**: Edge functions and API documentation
 - **[User Guide](./docs/USER_GUIDE.md)**: Step-by-step instructions for all user types
 
-## Live Demo
-
-Visit the live application: [smartmartx.vercel.app](https://smartmartx.vercel.app)
-
 ## License
 
-This project is developed for academic purposes as part of BITS Pilani coursework.
-
-## Contact
-
-For questions or support, please contact the team members listed above.
+This project is open source and available under the MIT License.

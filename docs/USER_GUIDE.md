@@ -1,4 +1,4 @@
-# SmartMartX User Guide
+# Vendora User Guide
 
 ## Table of Contents
 
@@ -15,7 +15,7 @@
 
 ## Introduction
 
-Welcome to **SmartMartX**, your comprehensive online delivery platform connecting customers with local retailers and wholesalers. This guide will help you navigate the platform and make the most of its features.
+Welcome to **Vendora**, your comprehensive online delivery platform connecting customers with local retailers and wholesalers. This guide will help you navigate the platform and make the most of its features.
 
 ### User Types
 
@@ -30,7 +30,7 @@ Welcome to **SmartMartX**, your comprehensive online delivery platform connectin
 ### Registration
 
 #### Step 1: Access the Registration Page
-1. Open SmartMartX in your browser
+1. Open Vendora in your browser
 2. Click **"Sign Up"** or **"Register"** button on the homepage
 
 #### Step 2: Choose Registration Method
@@ -72,7 +72,7 @@ Welcome to **SmartMartX**, your comprehensive online delivery platform connectin
 4. Add **Service Areas** (cities you serve)
 5. Click **"Complete Setup"**
 
-#### Step 5: Start Using SmartMartX
+#### Step 5: Start Using Vendora
 - You'll be redirected to your personalized dashboard
 - Start exploring features based on your role
 
@@ -82,7 +82,7 @@ Welcome to **SmartMartX**, your comprehensive online delivery platform connectin
 
 #### Returning Users
 
-1. Go to SmartMartX homepage
+1. Go to Vendora homepage
 2. Click **"Login"** or **"Sign In"**
 3. Choose your login method:
 
@@ -942,7 +942,7 @@ After confirming order:
 
 ### General
 
-**Q: Is SmartMartX free to use?**
+**Q: Is Vendora free to use?**
 A: Yes! Registration and using the platform is completely free for all users.
 
 **Q: Do I need to verify my email?**
@@ -1109,7 +1109,7 @@ A: Yes! We welcome feedback. Use the feedback feature or contact support.
 
 ## Conclusion
 
-Thank you for choosing **SmartMartX**! This platform is designed to make online commerce seamless for everyone - whether you're shopping for yourself, running a retail business, or supplying in bulk.
+Thank you for choosing **Vendora**! This platform is designed to make online commerce seamless for everyone - whether you're shopping for yourself, running a retail business, or supplying in bulk.
 
 **Remember:**
 - 👤 Customers enjoy convenient shopping

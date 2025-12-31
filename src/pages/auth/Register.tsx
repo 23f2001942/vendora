@@ -162,7 +162,7 @@ export default function Register() {
         <Card className="w-full max-w-md">
           <CardHeader>
             <CardTitle>Create an Account</CardTitle>
-            <CardDescription>Join SmartMartX to start trading</CardDescription>
+            <CardDescription>Join Vendora to start trading</CardDescription>
           </CardHeader>
         <CardContent>
           {step === 'credentials' && (

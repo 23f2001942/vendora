@@ -114,7 +114,7 @@ export const NavBar = () => {
           className="text-2xl font-bold text-primary cursor-pointer" 
           onClick={() => navigate('/')}
         >
-          SmartMartX
+          Vendora
         </h1>
         
         {/* Navigation Links */}
