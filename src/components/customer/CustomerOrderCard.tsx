@@ -1,9 +1,7 @@
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { PriceDisplay } from "@/components/shared/PriceDisplay";
-import { MapPin, Package, Truck } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { MapPin, Package } from "lucide-react";
 import { format } from "date-fns";
 
 interface CustomerOrderCardProps {
@@ -22,11 +20,6 @@ interface CustomerOrderCardProps {
         image_url: string | null;
       };
     }>;
-    delivery_tracking?: Array<{
-      id: string;
-      tracking_number: string;
-      current_status: string;
-    }>;
   };
 }
 
@@ -40,9 +33,6 @@ const statusColors = {
 };
 
 export const CustomerOrderCard = ({ order }: CustomerOrderCardProps) => {
-  const navigate = useNavigate();
-  const hasTracking = order.delivery_tracking && order.delivery_tracking.length > 0;
-
   return (
     <Card className="hover:shadow-md transition-shadow">
       <CardHeader className="pb-3">
@@ -106,26 +96,10 @@ export const CustomerOrderCard = ({ order }: CustomerOrderCardProps) => {
           <PriceDisplay price={order.total_amount} className="text-lg font-bold" />
         </div>
       </CardContent>
-      <CardFooter className="flex gap-2">
-        {hasTracking && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => navigate(`/customer/tracking/${order.id}`)}
-            className="gap-2"
-          >
-            <Truck className="h-4 w-4" />
-            Track Order
-          </Button>
-        )}
-        <Button
-          variant="secondary"
-          size="sm"
-          onClick={() => navigate(`/customer/tracking/${order.id}`)}
-          className="flex-1"
-        >
-          View Details
-        </Button>
+      <CardFooter>
+        <p className="text-xs text-muted-foreground">
+          Order tracking coming soon
+        </p>
       </CardFooter>
     </Card>
   );

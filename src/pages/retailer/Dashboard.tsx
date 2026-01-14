@@ -1,16 +1,14 @@
 import { useRequireAuth } from "@/hooks/useRequireAuth";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
-import { Package, ShoppingCart, TrendingUp, Users } from "lucide-react";
+import { Package, ShoppingCart } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { NavBar } from "@/components/NavBar";
 import { Button } from "@/components/ui/button";
 import { useOrderAnalytics } from "@/hooks/useOrderAnalytics";
-import { useDeliveryAnalytics } from "@/hooks/useDeliveryAnalytics";
 import { OrderStatsChart } from "@/components/analytics/OrderStatsChart";
 import { RevenueChart } from "@/components/analytics/RevenueChart";
-import { DeliveryPerformanceChart } from "@/components/analytics/DeliveryPerformanceChart";
 
 const RetailerDashboard = () => {
   const { user, loading } = useRequireAuth('retailer');
@@ -48,12 +46,7 @@ const RetailerDashboard = () => {
     "retailer"
   );
 
-  const { data: deliveryStats, isLoading: deliveryLoading } = useDeliveryAnalytics(
-    user?.id || "",
-    "retailer"
-  );
-
-  if (loading || analyticsLoading || deliveryLoading) {
+  if (loading || analyticsLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <p>Loading...</p>
@@ -151,12 +144,6 @@ const RetailerDashboard = () => {
           {stats && <OrderStatsChart stats={stats} />}
           {monthlyData && <RevenueChart data={monthlyData} />}
         </div>
-
-        {deliveryStats && (
-          <div className="mb-8">
-            <DeliveryPerformanceChart stats={deliveryStats} />
-          </div>
-        )}
       </main>
     </div>
   );

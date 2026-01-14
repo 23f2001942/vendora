@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PriceDisplay } from "@/components/shared/PriceDisplay";
-import { ShoppingBag } from "lucide-react";
+import { ShoppingBag, Clock } from "lucide-react";
 
 interface CartSummaryProps {
   items: any[];
@@ -15,16 +15,6 @@ export const CartSummary = ({ items, onCheckout }: CartSummaryProps) => {
 
   const tax = subtotal * 0.1; // 10% tax
   const total = subtotal + tax;
-
-  const hasOutOfStock = items.some(
-    (item) => !item.is_available || item.stock_quantity === 0
-  );
-
-  const hasLowStock = items.some(
-    (item) => item.quantity > item.stock_quantity
-  );
-
-  const canCheckout = !hasOutOfStock && !hasLowStock && items.length > 0;
 
   return (
     <Card>
@@ -50,24 +40,16 @@ export const CartSummary = ({ items, onCheckout }: CartSummaryProps) => {
         <Button
           className="w-full"
           size="lg"
-          onClick={onCheckout}
-          disabled={!canCheckout}
+          disabled
+          variant="secondary"
         >
-          <ShoppingBag className="h-4 w-4 mr-2" />
-          Proceed to Checkout
+          <Clock className="h-4 w-4 mr-2" />
+          Checkout Coming Soon
         </Button>
 
-        {hasOutOfStock && (
-          <p className="text-xs text-destructive text-center">
-            Remove out of stock items to continue
-          </p>
-        )}
-
-        {hasLowStock && !hasOutOfStock && (
-          <p className="text-xs text-yellow-600 dark:text-yellow-500 text-center">
-            Adjust quantities to continue
-          </p>
-        )}
+        <p className="text-xs text-muted-foreground text-center">
+          Payment integration will be added soon
+        </p>
       </CardContent>
     </Card>
   );
