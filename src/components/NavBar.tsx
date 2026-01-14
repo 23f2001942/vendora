@@ -263,7 +263,8 @@ export const NavBar = () => {
               </Button>
             </div>
           ) : (
-          <nav className="hidden md:flex items-center gap-1 mr-2">
+          <>
+            <nav className="hidden md:flex items-center gap-1 mr-2">
               <Button
                 variant="ghost"
                 onClick={() => navigate("/products")}
