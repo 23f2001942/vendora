@@ -10,6 +10,14 @@ import Register from "./pages/auth/Register";
 import Login from "./pages/auth/Login";
 import ResetPassword from "./pages/auth/ResetPassword";
 import Onboarding from "./pages/Onboarding";
+
+// Public Pages
+import PublicProducts from "./pages/public/Products";
+import PublicProductDetail from "./pages/public/ProductDetail";
+import PublicRetailers from "./pages/public/Retailers";
+import PublicRetailerStorefront from "./pages/public/RetailerStorefront";
+
+// Customer Pages
 import CustomerDashboard from "./pages/customer/Dashboard";
 import CustomerOrders from "./pages/customer/Orders";
 import CustomerRetailers from "./pages/customer/Retailers";
@@ -17,9 +25,8 @@ import CustomerRetailerProducts from "./pages/customer/RetailerProducts";
 import CustomerProductDetail from "./pages/customer/ProductDetail";
 import CustomerProfile from "./pages/customer/Profile";
 import CustomerCart from "./pages/customer/Cart";
-import CustomerCheckout from "./pages/customer/Checkout";
-import CustomerOrderTracking from "./pages/customer/OrderTracking";
 
+// Retailer Pages
 import RetailerDashboard from "./pages/retailer/Dashboard";
 import RetailerProducts from "./pages/retailer/Products";
 import RetailerOrderManagement from "./pages/retailer/OrderManagement";
@@ -30,6 +37,7 @@ import RetailerWholesalerProducts from "./pages/retailer/WholesalerProducts";
 import RetailerPendingProducts from "./pages/retailer/PendingProducts";
 import RetailerProfile from "./pages/retailer/Profile";
 
+// Wholesaler Pages
 import WholesalerDashboard from "./pages/wholesaler/Dashboard";
 import WholesalerProducts from "./pages/wholesaler/Products";
 import WholesalerOrders from "./pages/wholesaler/Orders";
@@ -68,7 +76,14 @@ const App = () => {
         <Sonner />
         <BrowserRouter>
           <Routes>
+            {/* Public Routes */}
             <Route path="/" element={<Index />} />
+            <Route path="/products" element={<PublicProducts />} />
+            <Route path="/product/:productId" element={<PublicProductDetail />} />
+            <Route path="/retailers" element={<PublicRetailers />} />
+            <Route path="/retailer/:retailerId" element={<PublicRetailerStorefront />} />
+            
+            {/* Auth Routes */}
             <Route path="/auth/register" element={<Register />} />
             <Route path="/auth/login" element={<Login />} />
             <Route path="/auth/reset-password" element={<ResetPassword />} />
@@ -82,8 +97,6 @@ const App = () => {
             <Route path="/customer/product/:productId" element={<CustomerProductDetail />} />
             <Route path="/customer/profile" element={<CustomerProfile />} />
             <Route path="/customer/cart" element={<CustomerCart />} />
-            <Route path="/customer/checkout" element={<CustomerCheckout />} />
-            <Route path="/customer/tracking/:orderId" element={<CustomerOrderTracking />} />
             
             {/* Retailer Routes */}
             <Route path="/retailer/dashboard" element={<RetailerDashboard />} />

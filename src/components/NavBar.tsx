@@ -263,30 +263,45 @@ export const NavBar = () => {
               </Button>
             </div>
           ) : (
-            <>
-              {isAuthPage ? (
-                <>
-                  {location.pathname === "/auth/login" ? (
-                    <Button onClick={() => navigate('/auth/register')}>
-                      Sign Up
-                    </Button>
-                  ) : (
-                    <Button variant="ghost" onClick={() => navigate('/auth/login')}>
-                      Login
-                    </Button>
-                  )}
-                </>
-              ) : (
-                <>
-                  <Button variant="ghost" onClick={() => navigate('/auth/login')}>
-                    Login
-                  </Button>
+          <nav className="hidden md:flex items-center gap-1 mr-2">
+              <Button
+                variant="ghost"
+                onClick={() => navigate("/products")}
+                className={location.pathname === "/products" ? "bg-accent" : ""}
+              >
+                Products
+              </Button>
+              <Button
+                variant="ghost"
+                onClick={() => navigate("/retailers")}
+                className={location.pathname === "/retailers" ? "bg-accent" : ""}
+              >
+                Retailers
+              </Button>
+            </nav>
+            {isAuthPage ? (
+              <>
+                {location.pathname === "/auth/login" ? (
                   <Button onClick={() => navigate('/auth/register')}>
                     Sign Up
                   </Button>
-                </>
-              )}
-            </>
+                ) : (
+                  <Button variant="ghost" onClick={() => navigate('/auth/login')}>
+                    Login
+                  </Button>
+                )}
+              </>
+            ) : (
+              <>
+                <Button variant="ghost" onClick={() => navigate('/auth/login')}>
+                  Login
+                </Button>
+                <Button onClick={() => navigate('/auth/register')}>
+                  Sign Up
+                </Button>
+              </>
+            )}
+          </>
           )}
         </div>
       </div>

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useRequireAuth } from "@/hooks/useRequireAuth";
-import { useOrders } from "@/hooks/useDeliveryTracking";
+import { useOrders } from "@/hooks/useOrders";
 import { NavBar } from "@/components/NavBar";
 import { CustomerOrderCard } from "@/components/customer/CustomerOrderCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
