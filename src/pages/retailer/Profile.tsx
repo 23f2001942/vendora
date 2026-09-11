@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+﻿import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft } from "lucide-react";
-import { GooglePlacesAutocomplete } from "@/components/auth/GooglePlacesAutocomplete";
+import { AddressAutocomplete } from "@/components/auth/AddressAutocomplete";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -99,7 +99,7 @@ const Profile = () => {
               </div>
 
               <div>
-                <GooglePlacesAutocomplete
+                <AddressAutocomplete
                   onLocationSelect={setSelectedLocation}
                   defaultValue={retailer?.business_address || ""}
                   label="Business Address"
@@ -137,3 +137,4 @@ const Profile = () => {
 };
 
 export default Profile;
+

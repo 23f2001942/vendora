@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+﻿import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useRequireAuth } from "@/hooks/useRequireAuth";
 import { useProfile } from "@/hooks/useProfile";
@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft } from "lucide-react";
-import { GooglePlacesAutocomplete } from "@/components/auth/GooglePlacesAutocomplete";
+import { AddressAutocomplete } from "@/components/auth/AddressAutocomplete";
 import { useState } from "react";
 
 const Profile = () => {
@@ -85,7 +85,7 @@ const Profile = () => {
               </div>
 
               <div>
-                <GooglePlacesAutocomplete
+                <AddressAutocomplete
                   onLocationSelect={setSelectedLocation}
                   defaultValue={profile?.default_address || ""}
                   label="Default Delivery Address"
@@ -106,3 +106,4 @@ const Profile = () => {
 };
 
 export default Profile;
+

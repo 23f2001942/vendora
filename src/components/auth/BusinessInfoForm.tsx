@@ -1,7 +1,7 @@
 import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { GooglePlacesAutocomplete } from './GooglePlacesAutocomplete';
+import { AddressAutocomplete } from './AddressAutocomplete';
 
 interface BusinessInfo {
   businessName: string;
@@ -34,7 +34,7 @@ export const BusinessInfoForm: React.FC<BusinessInfoFormProps> = ({
         />
       </div>
 
-      <GooglePlacesAutocomplete
+      <AddressAutocomplete
         label="Business Address"
         placeholder="Search for your business address..."
         onLocationSelect={(location) => {

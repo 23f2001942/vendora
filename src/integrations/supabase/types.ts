@@ -479,105 +479,6 @@ export type Database = {
           },
         ]
       }
-      payment_methods: {
-        Row: {
-          card_brand: string | null
-          card_last_four: string | null
-          created_at: string
-          id: string
-          is_default: boolean | null
-          method_type: Database["public"]["Enums"]["payment_method_type"]
-          updated_at: string
-          upi_id: string | null
-          user_id: string
-        }
-        Insert: {
-          card_brand?: string | null
-          card_last_four?: string | null
-          created_at?: string
-          id?: string
-          is_default?: boolean | null
-          method_type: Database["public"]["Enums"]["payment_method_type"]
-          updated_at?: string
-          upi_id?: string | null
-          user_id: string
-        }
-        Update: {
-          card_brand?: string | null
-          card_last_four?: string | null
-          created_at?: string
-          id?: string
-          is_default?: boolean | null
-          method_type?: Database["public"]["Enums"]["payment_method_type"]
-          updated_at?: string
-          upi_id?: string | null
-          user_id?: string
-        }
-        Relationships: []
-      }
-      payment_transactions: {
-        Row: {
-          amount: number
-          completed_at: string | null
-          created_at: string
-          failure_reason: string | null
-          gateway_response: Json | null
-          id: string
-          order_id: string
-          payment_method_id: string | null
-          payment_method_type: Database["public"]["Enums"]["payment_method_type"]
-          status: Database["public"]["Enums"]["payment_status"]
-          transaction_id: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          amount: number
-          completed_at?: string | null
-          created_at?: string
-          failure_reason?: string | null
-          gateway_response?: Json | null
-          id?: string
-          order_id: string
-          payment_method_id?: string | null
-          payment_method_type: Database["public"]["Enums"]["payment_method_type"]
-          status?: Database["public"]["Enums"]["payment_status"]
-          transaction_id: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          amount?: number
-          completed_at?: string | null
-          created_at?: string
-          failure_reason?: string | null
-          gateway_response?: Json | null
-          id?: string
-          order_id?: string
-          payment_method_id?: string | null
-          payment_method_type?: Database["public"]["Enums"]["payment_method_type"]
-          status?: Database["public"]["Enums"]["payment_status"]
-          transaction_id?: string
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "payment_transactions_order_id_fkey"
-            columns: ["order_id"]
-            isOneToOne: false
-            referencedRelation: "orders"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "payment_transactions_payment_method_id_fkey"
-            columns: ["payment_method_id"]
-            isOneToOne: false
-            referencedRelation: "payment_methods"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       products: {
         Row: {
           base_price: number
@@ -626,6 +527,7 @@ export type Database = {
           id: string
           phone: string | null
           postal_code: string | null
+          role: string
           state: string | null
           updated_at: string
         }
@@ -643,6 +545,7 @@ export type Database = {
           id: string
           phone?: string | null
           postal_code?: string | null
+          role?: string
           state?: string | null
           updated_at?: string
         }
@@ -660,6 +563,7 @@ export type Database = {
           id?: string
           phone?: string | null
           postal_code?: string | null
+          role?: string
           state?: string | null
           updated_at?: string
         }
@@ -759,27 +663,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      user_roles: {
-        Row: {
-          created_at: string
-          id: string
-          role: Database["public"]["Enums"]["app_role"]
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          role: Database["public"]["Enums"]["app_role"]
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          role?: Database["public"]["Enums"]["app_role"]
-          user_id?: string
-        }
-        Relationships: []
       }
       wholesaler_products: {
         Row: {

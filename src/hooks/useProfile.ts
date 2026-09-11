@@ -21,19 +21,7 @@ export const useProfile = () => {
 
       if (profileError) throw profileError;
 
-      // Fetch role
-      const { data: roleData, error: roleError } = await supabase
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", user.id)
-        .single();
-
-      if (roleError) throw roleError;
-
-      return {
-        ...profileData,
-        role: roleData.role,
-      };
+      return profileData;
     },
     enabled: !!user,
   });

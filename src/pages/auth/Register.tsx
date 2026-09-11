@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { NavBar } from '@/components/NavBar';
@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { GooglePlacesAutocomplete } from '@/components/auth/GooglePlacesAutocomplete';
+import { AddressAutocomplete } from '@/components/auth/AddressAutocomplete';
 import { RoleSelector } from '@/components/auth/RoleSelector';
 import { BusinessInfoForm } from '@/components/auth/BusinessInfoForm';
 import { SocialAuthButtons } from '@/components/auth/SocialAuthButtons';
@@ -116,10 +116,10 @@ export default function Register() {
 
       if (profileError) throw profileError;
 
-      const { error: roleError } = await supabase.from('user_roles').insert({
-        user_id: authData.user.id,
-        role
-      });
+      const { error: roleError } = await supabase
+        .from('profiles')
+        .update({ role })
+        .eq('id', authData.user.id);
 
       if (roleError) throw roleError;
 
@@ -195,7 +195,7 @@ export default function Register() {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
+                  placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
                 />
               </div>
 
@@ -234,7 +234,7 @@ export default function Register() {
 
           {step === 'location' && (
             <div className="space-y-4">
-              <GooglePlacesAutocomplete
+              <AddressAutocomplete
                 label="Your Location"
                 placeholder="Search for your address..."
                 onLocationSelect={setLocation}
@@ -287,3 +287,4 @@ export default function Register() {
     </div>
   );
 }
+

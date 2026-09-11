@@ -37,12 +37,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const fetchRoles = async (userId: string) => {
     const { data } = await supabase
-      .from('user_roles')
+      .from('profiles')
       .select('role')
-      .eq('user_id', userId);
-    
-    if (data) {
-      setRoles(data.map(r => r.role as UserRole));
+      .eq('id', userId)
+      .single();
+
+    if (data?.role) {
+      setRoles([data.role as UserRole]);
     }
   };
 

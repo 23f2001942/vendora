@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { GooglePlacesAutocomplete } from '@/components/auth/GooglePlacesAutocomplete';
+import { AddressAutocomplete } from '@/components/auth/AddressAutocomplete';
 import { RoleSelector } from '@/components/auth/RoleSelector';
 import { BusinessInfoForm } from '@/components/auth/BusinessInfoForm';
 import { useAuth } from '@/contexts/AuthContext';
@@ -129,10 +129,10 @@ export default function Onboarding() {
         if (addressError) throw addressError;
       }
 
-      const { error: roleError } = await supabase.from('user_roles').insert({
-        user_id: user.id,
-        role
-      });
+      const { error: roleError } = await supabase
+        .from('profiles')
+        .update({ role })
+        .eq('id', user.id);
 
       if (roleError) throw roleError;
 
@@ -179,7 +179,7 @@ export default function Onboarding() {
         <CardContent>
           {step === 'location' && (
             <div className="space-y-4">
-              <GooglePlacesAutocomplete
+              <AddressAutocomplete
                 label="Your Location"
                 placeholder="Search for your address..."
                 onLocationSelect={setLocation}
@@ -249,3 +249,4 @@ export default function Onboarding() {
     </div>
   );
 }
+
